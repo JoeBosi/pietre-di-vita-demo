@@ -60,7 +60,7 @@ const it = {
   'err.recalled': 'Questo lotto è stato richiamato: non si può aggiungere altro.', 'err.login': 'Utente o password non corretti.', 'err.session': 'Sessione scaduta: accedi di nuovo.', 'err.net': 'Non riesco a raggiungere il server. Riprova.',
   'err.dup': 'Esiste già un lotto con questo codice.', 'err.must': 'Prima devi cambiare la password.', 'err.wrongpw': 'La password attuale non è corretta.', 'err.generic': 'Qualcosa è andato storto', 'err.many': 'Troppi tentativi: riprova tra un minuto.',
   'offline.note': 'Server in modalità prova: i passi non vengono scritti sul registro pubblico.',
-  'foot.sig': 'Prof. Giuseppe Bosi · Dottore in Ingegneria Elettronica (V.O.) · Professore di Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
+  'foot.sig': 'Prof. Giuseppe Bosi · Dottore in Ingegneria Elettronica · Professore di Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Carico...',
 } as const;
 
@@ -125,7 +125,7 @@ const en: Record<Key, string> = {
   'err.recalled': 'This lot was recalled: nothing more can be added.', 'err.login': 'Wrong user or password.', 'err.session': 'Session expired: please sign in again.', 'err.net': 'Cannot reach the server. Try again.',
   'err.dup': 'A lot with this code already exists.', 'err.must': 'You must change your password first.', 'err.wrongpw': 'The current password is wrong.', 'err.generic': 'Something went wrong', 'err.many': 'Too many attempts: try again in a minute.',
   'offline.note': 'Server in test mode: steps are not written on the public record.',
-  'foot.sig': 'Prof. Giuseppe Bosi · Dottore in Ingegneria Elettronica (V.O.) · Professore di Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
+  'foot.sig': 'Prof. Giuseppe Bosi · Master\'s-level degree in Electronic Engineering (5-year Italian Laurea, EQF level 7) · Teacher of Computer Science and Technology', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Loading...',
 };
 
