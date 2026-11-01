@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modelling the lot - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="it" href="../it/c5.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Giuseppe Bosi</a><a class="lang" href="../it/c5.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div>
+<header class="h"><div class="brand">Olive oil traceability, step by step</div></header>
+<main>
+<h1>5. Modelling the lot</h1><div class="goal"><strong>Goal:</strong> Write the minimal structure of a lot in Solidity: data, phases and one token per lot.</div>
+<p>From here on we build a small version you can write in an afternoon. You need Node.js, <a href="https://hardhat.org/docs">Hardhat</a> and the <a href="https://docs.openzeppelin.com/contracts/5.x/">OpenZeppelin</a> libraries. The language is called Solidity.</p>
+<p class="analogy">A smart contract is like a vending machine: the rules are inside the machine, and everyone who uses it finds the same rules.</p>
+<h2>Three ideas</h2>
+<p><strong>Struct</strong>: a card with several fields (code, cultivar, number of bottles, recalled). <strong>Enum</strong>: a list of possible values, here the phases. <strong>ERC-721</strong>: the standard for "unique" tokens, where each number identifies exactly one object; we use one token per lot, so the lot has an owner and a number.</p>
+<pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract LottoMinimo is ERC721 {
+    enum Fase { Raccolta, Molitura, Analisi, Imbottigliamento }
+
+    struct Lotto {
+        string codice;
+        string cultivar;
+        uint32 nBottiglie;
+        bool richiamato;
+    }
+
+    uint256 private _ultimoId;
+    mapping(uint256 =&gt; Lotto) private _lotti;
+
+    constructor() ERC721("Lotto minimo", "LTT") {}
+
+    function creaLotto(string calldata codice, string calldata cultivar) external returns (uint256 id) {
+        id = ++_ultimoId;
+        _lotti[id] = Lotto(codice, cultivar, 0, false);
+        _mint(msg.sender, id);
+    }
+}</code></pre><h2>Line by line</h2><ol><li><code>import</code>: takes the ERC-721 base from the OpenZeppelin library (installed with <code>npm i @openzeppelin/contracts</code>).</li><li><code>enum Fase</code>: the four phases in order; internally they are 0, 1, 2, 3.</li><li><code>struct Lotto</code>: a lot's card. <code>nBottiglie</code> starts at 0 and is set at bottling.</li><li><code>_ultimoId</code> counts lots; <code>_lotti</code> links each token number to its card.</li><li>The <code>constructor</code> gives the token a name and a symbol.</li><li><code>creaLotto</code>: raises the counter, saves the card and, with <code>_mint</code>, creates the token owned by the caller (<code>msg.sender</code>).</li></ol>
+<p>In the full Pietre di Vita contract the card also has area, harvest date, kilos of olives and recall reason, and the lot code is checked for uniqueness. The basic logic is this one.</p>
+<div class="try"><h2>Try it yourself</h2><p>Create a folder, run npx hardhat init (choose a JavaScript project), then npm i @openzeppelin/contracts. Copy the code into contracts/LottoMinimo.sol and run npx hardhat compile. If you see "Compiled ... Solidity files successfully" it works.</p></div><div class="learn"><h2>What you learned</h2><ul><li>A struct gathers a lot's data in one card.</li><li>An enum lists the possible phases in order.</li><li>With ERC-721 each lot is a token with a number and an owner.</li></ul></div><h2>To go deeper</h2><ul><li><a href="https://docs.openzeppelin.com/contracts/5.x/erc721">OpenZeppelin ERC-721 guide</a></li><li><a href="https://hardhat.org/docs">Hardhat</a></li></ul><nav class="pn"><a href="c4.html">&larr; How you verify it</a><a href="c6.html">Who can do what &rarr;</a></nav>
+</main>
+<footer>Master's-level degree in Electronic Engineering (5-year Italian Laurea, pre-reform, EQF level 7) · Teacher of Computer Science and Technology</footer>
+</body>
+</html>

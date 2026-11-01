@@ -1,0 +1,20 @@
+# Example unit. Copy to /etc/systemd/system/, adjust paths and user, then enable. Not installed automatically.
+[Unit]
+Description=Pietre di Vita backend (olive oil traceability demo)
+After=network-online.target
+
+[Service]
+Type=simple
+User=olio
+WorkingDirectory=/opt/olio/backend
+EnvironmentFile=/opt/olio/backend/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/olio/backend/data
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

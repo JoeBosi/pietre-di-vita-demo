@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@theme {
+  --color-olive-50: #f4f7ec;
+  --color-olive-100: #e6edd2;
+  --color-olive-600: #5f7a2a;
+  --color-olive-700: #4c6422;
+  --color-olive-800: #3b4f1b;
+}
+html { font-size: 18px; }
+body { background: #fcfcf8; color: #1f2417; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }

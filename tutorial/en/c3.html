@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The register nobody can rewrite - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="it" href="../it/c3.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Giuseppe Bosi</a><a class="lang" href="../it/c3.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div>
+<header class="h"><div class="brand">Olive oil traceability, step by step</div></header>
+<main>
+<h1>3. The register nobody can rewrite</h1><div class="goal"><strong>Goal:</strong> Understand in one page what a blockchain is and what the fingerprint (hash) of a document is.</div>
+<h2>The notebook with glued pages</h2>
+<p class="analogy">Picture a notebook where each page, as soon as it is written, is signed and glued to the previous one. To change page 2 you would have to tear off pages 3, 4 and all the others, and everyone holding a copy of the notebook would notice.</p>
+<svg class="fig" viewBox="0 0 900 190" role="img" aria-label="fingerprint of the previous page"><rect x="30" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="44" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Page 1</text><text x="44" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#a3f1…</text><text x="44" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; glued and signed</text><path d="M270 75 H330" stroke="#6a9a3a" stroke-width="3"/><path d="M330 75 l-9 -6 v12z" fill="#6a9a3a"/><rect x="330" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="344" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Page 2</text><text x="344" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#9c20…</text><text x="344" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; glued and signed</text><path d="M570 75 H630" stroke="#6a9a3a" stroke-width="3"/><path d="M630 75 l-9 -6 v12z" fill="#6a9a3a"/><rect x="630" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="644" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Page 3</text><text x="644" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#e71b…</text><text x="644" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; glued and signed</text><text x="450" y="170" text-anchor="middle" font-size="16" font-family="system-ui,sans-serif" fill="#44503a">fingerprint of the previous page</text></svg>
+<p>A <strong>blockchain</strong> is exactly that: a register where entries are grouped in blocks, each block contains the fingerprint of the previous one, and many independent computers keep a copy. Only those with the right credentials may write; anyone may read. Once written, data is not edited: at most a new line is added to correct it, and the old one stays visible.</p>
+<p>We use a test network (Polygon Amoy): it works like the real one but with worthless coins, ideal for learning.</p>
+<h2>The fingerprint of a document</h2>
+<p>A <strong>hash</strong> is a digital fingerprint of a file: a program reads the whole document and produces a fixed-length string of letters and digits. Two rules: the same document always gives the same fingerprint; if even one comma changes, the fingerprint changes completely. And you cannot rebuild the document from its fingerprint.</p>
+<p>Example with the sha256 algorithm on two almost identical texts:</p>
+<p><code>acidita 0.2</code> becomes<br><span class="hash">a65f4491f8a94984e9992a249393423c32d511f7ff15ee7bf83663c663ee54da</span></p>
+<p><code>acidita 0.3</code> becomes<br><span class="hash">801251e0ce82939caa01ea32b7958cf57ecdac51422051fcff26c21d165b20c1</span></p>
+<p>One character differs and the two fingerprints look nothing alike. That is why writing the fingerprint of the laboratory report on the chain is enough: if someone altered the PDF, the fingerprint would no longer match.</p>
+<div class="try"><h2>Try it yourself</h2><p>On a Linux or Mac computer open the terminal and type: printf 'acidita 0.2' | sha256sum (on Mac: shasum -a 256). You must get exactly the first fingerprint above. Then change one character and see what happens.</p></div><div class="learn"><h2>What you learned</h2><ul><li>A blockchain is a shared register where each page is tied to the previous one.</li><li>A hash is a file's fingerprint: same file, same fingerprint.</li><li>Changing one comma changes the whole fingerprint, so tampering shows.</li></ul></div><h2>To go deeper</h2><ul><li><a href="https://docs.polygon.technology/">Polygon documentation</a></li></ul><nav class="pn"><a href="c2.html">&larr; A bottle's story in 4 phases</a><a href="c4.html">How you verify it &rarr;</a></nav>
+</main>
+<footer>Master's-level degree in Electronic Engineering (5-year Italian Laurea, pre-reform, EQF level 7) · Teacher of Computer Science and Technology</footer>
+</body>
+</html>

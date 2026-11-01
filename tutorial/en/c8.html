@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The QR code and the public page - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="it" href="../it/c8.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Giuseppe Bosi</a><a class="lang" href="../it/c8.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div>
+<header class="h"><div class="brand">Olive oil traceability, step by step</div></header>
+<main>
+<h1>8. The QR code and the public page</h1><div class="goal"><strong>Goal:</strong> Link the bottle's QR code to a read-only function that answers: does it exist? is it recalled?</div>
+<p class="analogy">The QR is like a booking reference: alone it says nothing, but at the right counter it shows your file.</p>
+<h2>The address</h2>
+<p>Each bottle has a web address shaped like <code>/b/&lt;lot&gt;/&lt;n&gt;</code>, for example <code>/b/25A001/12</code>. The QR is just that address drawn as small squares. Any QR library makes it, one line per bottle, starting from the site's public address.</p>
+<h2>The verification function</h2>
+<p>A <code>view</code> function reads data and costs the caller nothing: no wallet, no signature.</p>
+<pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+contract VerificaMinima {
+    mapping(bytes32 =&gt; uint256) private _idPerCodice; // keccak256(codice) =&gt; id, 0 = sconosciuto
+    mapping(uint256 =&gt; uint32) private _nBottiglie;
+    mapping(uint256 =&gt; bool) private _richiamato;
+
+    function verificaBottiglia(string calldata codice, uint32 n)
+        external
+        view
+        returns (bool esiste, bool richiamato, uint256 id)
+    {
+        id = _idPerCodice[keccak256(bytes(codice))];
+        if (id == 0) return (false, false, 0);
+        esiste = n &gt;= 1 &amp;&amp; n &lt;= _nBottiglie[id];
+        richiamato = _richiamato[id];
+    }
+}</code></pre><h2>Line by line</h2><ol><li>Three helper lists: from the code (turned into a number with <code>keccak256</code>) to the lot number, then bottles and recall for each lot. In the real contract <code>creaLotto</code>, <code>imbottiglia</code> and <code>richiama</code> fill them.</li><li><code>view</code> means "read-only"; it returns three named values.</li><li>If the code is unknown the id is 0 and we answer "does not exist".</li><li><code>esiste</code> is true if <code>n</code> is between 1 and the lot's bottle count: this is the third check of chapter 4.</li><li><code>richiamato</code> drives the red badge.</li></ol>
+<h2>Calling it from the page</h2>
+<pre><code>import { Contract, JsonRpcProvider } from "ethers";
+
+const abi = ["function verificaBottiglia(string codice, uint32 n) view returns (bool esiste, bool richiamato, uint256 id)"];
+const contratto = new Contract(INDIRIZZO, abi, new JsonRpcProvider(RPC_URL));
+
+// dall'indirizzo della pagina: /b/25A001/12
+const [, , codice, n] = window.location.pathname.split("/");
+const [esiste, richiamato] = await contratto.verificaBottiglia(codice, Number(n));</code></pre><h2>Line by line</h2><ol><li>We import ethers, a library that talks to the chain.</li><li>The <code>abi</code> is the list of functions we want to call, in readable form.</li><li><code>Contract</code> joins the contract address, the abi and a connection to the network (<code>INDIRIZZO</code> and <code>RPC_URL</code> are your own values).</li><li>From the browser address we split the lot code and the bottle number.</li><li>We call <code>verificaBottiglia</code> and receive the answers to display.</li></ol>
+<p>In the demo this step is not even needed in the browser: the backend answers <code>/api/pubblico/bottiglia/&lt;lot&gt;/&lt;n&gt;</code> with the verification already done, and the page shows the badge.</p>
+<div class="try"><h2>Try it yourself</h2><p>With the full contract in your Hardhat project, write a test that creates a 5-bottle lot and checks that verificaBottiglia("25A001", 5) gives esiste = true and verificaBottiglia("25A001", 6) gives false.</p></div><div class="learn"><h2>What you learned</h2><ul><li>The QR contains only the address /b/lot/number.</li><li>A view function reads the chain for free and without a wallet.</li><li>The bottle number must lie between 1 and the number of bottles filled.</li></ul></div><h2>To go deeper</h2><ul><li><a href="https://hardhat.org/docs">Hardhat</a></li></ul><nav class="pn"><a href="c7.html">&larr; Documents outside the chain</a><a href="c9.html">What is missing to do it for real &rarr;</a></nav>
+</main>
+<footer>Master's-level degree in Electronic Engineering (5-year Italian Laurea, pre-reform, EQF level 7) · Teacher of Computer Science and Technology</footer>
+</body>
+</html>

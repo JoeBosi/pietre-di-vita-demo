@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Il registro che nessuno può riscrivere - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="en" href="../en/c3.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi</a><a class="lang" href="../en/c3.html" hreflang="en" lang="en" title="English version"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#1d3b8b"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/><path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="7"/></svg><span>EN</span></a></div>
+<header class="h"><div class="brand">Tracciabilità dell'olio, passo passo</div></header>
+<main>
+<h1>3. Il registro che nessuno può riscrivere</h1><div class="goal"><strong>Obiettivo:</strong> Capire in una pagina cos'è una blockchain e cos'è l'impronta (hash) di un documento.</div>
+<h2>Il quaderno con le pagine incollate</h2>
+<p class="analogy">Immagina un quaderno dove ogni pagina, appena scritta, viene firmata e incollata alla precedente. Per cambiare la pagina 2 dovresti staccare anche la 3, la 4 e tutte le altre, e tutti quelli che hanno una copia del quaderno se ne accorgerebbero.</p>
+<svg class="fig" viewBox="0 0 900 190" role="img" aria-label="impronta della pagina precedente"><rect x="30" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="44" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Pagina 1</text><text x="44" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#a3f1…</text><text x="44" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; incollata e firmata</text><path d="M270 75 H330" stroke="#6a9a3a" stroke-width="3"/><path d="M330 75 l-9 -6 v12z" fill="#6a9a3a"/><rect x="330" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="344" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Pagina 2</text><text x="344" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#9c20…</text><text x="344" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; incollata e firmata</text><path d="M570 75 H630" stroke="#6a9a3a" stroke-width="3"/><path d="M630 75 l-9 -6 v12z" fill="#6a9a3a"/><rect x="630" y="20" width="240" height="110" rx="6" fill="#fffdf2" stroke="#8a7a4a" stroke-width="2.5"/><text x="644" y="52" font-size="20" font-family="system-ui,sans-serif" fill="#1f2a1f">Pagina 3</text><text x="644" y="86" font-size="15" font-family="ui-monospace,monospace" fill="#6b5a2a">#e71b…</text><text x="644" y="112" font-size="14" font-family="system-ui,sans-serif" fill="#2f7d32">&#10003; incollata e firmata</text><text x="450" y="170" text-anchor="middle" font-size="16" font-family="system-ui,sans-serif" fill="#44503a">impronta della pagina precedente</text></svg>
+<p>La <strong>blockchain</strong> è questo: un registro dove le registrazioni sono raggruppate in blocchi, ogni blocco contiene l'impronta del precedente, e molti computer indipendenti ne conservano una copia. Scrivere è permesso solo a chi ha le credenziali giuste; leggere è possibile a tutti. Una volta scritto, un dato non si modifica: al massimo si aggiunge una nuova riga che lo corregge, e la vecchia resta visibile.</p>
+<p>Noi usiamo una rete di prova (Polygon Amoy): funziona come quella vera ma con monete senza valore, adatta a imparare.</p>
+<h2>L'impronta di un documento</h2>
+<p>Un <strong>hash</strong> è un'impronta digitale di un file: un programma legge tutto il documento e produce una sequenza fissa di lettere e numeri. Due regole: lo stesso documento dà sempre la stessa impronta; se cambia anche una sola virgola, l'impronta cambia del tutto. E dall'impronta non si può ricostruire il documento.</p>
+<p>Esempio con l'algoritmo sha256 su due testi quasi uguali:</p>
+<p><code>acidita 0.2</code> diventa<br><span class="hash">a65f4491f8a94984e9992a249393423c32d511f7ff15ee7bf83663c663ee54da</span></p>
+<p><code>acidita 0.3</code> diventa<br><span class="hash">801251e0ce82939caa01ea32b7958cf57ecdac51422051fcff26c21d165b20c1</span></p>
+<p>Un solo carattere diverso e le due impronte non si assomigliano affatto. Per questo basta scrivere sulla catena l'impronta del referto del laboratorio: se qualcuno cambiasse il PDF, l'impronta non coinciderebbe più.</p>
+<div class="try"><h2>Prova tu</h2><p>Su un computer Linux o Mac apri il terminale e scrivi: printf 'acidita 0.2' | sha256sum (su Mac: shasum -a 256). Devi ottenere esattamente la prima impronta qui sopra. Poi cambia un carattere e guarda cosa succede.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Una blockchain è un registro condiviso dove ogni pagina è legata alla precedente.</li><li>L'hash è l'impronta di un file: stesso file, stessa impronta.</li><li>Cambiare una virgola cambia tutta l'impronta, quindi la manomissione si vede.</li></ul></div><h2>Per approfondire</h2><ul><li><a href="https://docs.polygon.technology/">Documentazione Polygon</a></li></ul><nav class="pn"><a href="c2.html">&larr; La storia di una bottiglia in 4 fasi</a><a href="c4.html">Come lo verifichi tu &rarr;</a></nav>
+</main>
+<footer>Dottore in Ingegneria Elettronica (V.O.) · Professore di Scienze e Tecnologie Informatiche</footer>
+</body>
+</html>

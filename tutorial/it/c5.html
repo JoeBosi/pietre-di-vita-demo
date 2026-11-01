@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modelliamo il lotto - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="en" href="../en/c5.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi</a><a class="lang" href="../en/c5.html" hreflang="en" lang="en" title="English version"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#1d3b8b"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/><path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="7"/></svg><span>EN</span></a></div>
+<header class="h"><div class="brand">Tracciabilità dell'olio, passo passo</div></header>
+<main>
+<h1>5. Modelliamo il lotto</h1><div class="goal"><strong>Obiettivo:</strong> Scrivere la struttura minima di un lotto in Solidity: dati, fasi e un token per ogni lotto.</div>
+<p>Da qui in poi costruiamo una versione piccola, che puoi scrivere in un pomeriggio. Servono Node.js, <a href="https://hardhat.org/docs">Hardhat</a> e le librerie di <a href="https://docs.openzeppelin.com/contracts/5.x/">OpenZeppelin</a>. Il linguaggio si chiama Solidity.</p>
+<p class="analogy">Un contratto intelligente è come un distributore automatico: le regole sono dentro la macchina, e chiunque le usi le trova uguali.</p>
+<h2>Tre idee</h2>
+<p><strong>Struct</strong>: una scheda con più campi (codice, cultivar, numero di bottiglie, richiamato). <strong>Enum</strong>: un elenco di valori possibili, qui le fasi. <strong>ERC-721</strong>: lo standard dei token "unici", dove ogni numero identifica un solo oggetto; noi usiamo un token per ogni lotto, così il lotto ha un proprietario e un numero.</p>
+<pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract LottoMinimo is ERC721 {
+    enum Fase { Raccolta, Molitura, Analisi, Imbottigliamento }
+
+    struct Lotto {
+        string codice;
+        string cultivar;
+        uint32 nBottiglie;
+        bool richiamato;
+    }
+
+    uint256 private _ultimoId;
+    mapping(uint256 =&gt; Lotto) private _lotti;
+
+    constructor() ERC721("Lotto minimo", "LTT") {}
+
+    function creaLotto(string calldata codice, string calldata cultivar) external returns (uint256 id) {
+        id = ++_ultimoId;
+        _lotti[id] = Lotto(codice, cultivar, 0, false);
+        _mint(msg.sender, id);
+    }
+}</code></pre><h2>Riga per riga</h2><ol><li><code>import</code>: prende la base ERC-721 dalla libreria OpenZeppelin (installata con <code>npm i @openzeppelin/contracts</code>).</li><li><code>enum Fase</code>: le quattro fasi in ordine; internamente valgono 0, 1, 2, 3.</li><li><code>struct Lotto</code>: la scheda di un lotto. <code>nBottiglie</code> parte da 0 e si imposta all'imbottigliamento.</li><li><code>_ultimoId</code> conta i lotti; <code>_lotti</code> è un elenco che collega ogni numero di token alla sua scheda.</li><li>Il <code>constructor</code> dà un nome e un simbolo al token.</li><li><code>creaLotto</code>: aumenta il contatore, salva la scheda, e con <code>_mint</code> crea il token intestato a chi chiama (<code>msg.sender</code>).</li></ol>
+<p>Nel contratto completo di Pietre di Vita la scheda ha anche zona, data di raccolta, chili di olive e motivo del richiamo, e il codice del lotto viene controllato perché sia unico. La logica di base è questa.</p>
+<div class="try"><h2>Prova tu</h2><p>Crea una cartella, esegui npx hardhat init (scegli progetto JavaScript), poi npm i @openzeppelin/contracts. Copia il codice in contracts/LottoMinimo.sol e lancia npx hardhat compile. Se vedi "Compiled ... Solidity files successfully" funziona.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Un struct raccoglie i dati di un lotto in una scheda.</li><li>Un enum elenca le fasi possibili in ordine.</li><li>Con ERC-721 ogni lotto è un token con un numero e un proprietario.</li></ul></div><h2>Per approfondire</h2><ul><li><a href="https://docs.openzeppelin.com/contracts/5.x/erc721">Guida ERC-721 di OpenZeppelin</a></li><li><a href="https://hardhat.org/docs">Hardhat</a></li></ul><nav class="pn"><a href="c4.html">&larr; Come lo verifichi tu</a><a href="c6.html">Chi può fare cosa &rarr;</a></nav>
+</main>
+<footer>Dottore in Ingegneria Elettronica (V.O.) · Professore di Scienze e Tecnologie Informatiche</footer>
+</body>
+</html>

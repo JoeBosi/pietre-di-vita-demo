@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Il QR e la pagina pubblica - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="en" href="../en/c8.html">
+</head>
+<body>
+<div class="top"><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi</a><a class="lang" href="../en/c8.html" hreflang="en" lang="en" title="English version"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#1d3b8b"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/><path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="7"/></svg><span>EN</span></a></div>
+<header class="h"><div class="brand">Tracciabilità dell'olio, passo passo</div></header>
+<main>
+<h1>8. Il QR e la pagina pubblica</h1><div class="goal"><strong>Obiettivo:</strong> Collegare il QR della bottiglia a una funzione di sola lettura che risponde: esiste? è richiamata?</div>
+<p class="analogy">Il QR è come il numero di prenotazione: da solo non dice nulla, ma aprendo lo sportello giusto ti mostra la tua pratica.</p>
+<h2>L'indirizzo</h2>
+<p>Ogni bottiglia ha un indirizzo web fatto così: <code>/b/&lt;lotto&gt;/&lt;n&gt;</code>, per esempio <code>/b/25A001/12</code>. Il QR è solo quell'indirizzo disegnato come quadratini. Si crea con qualsiasi libreria QR, una riga per bottiglia, partendo dall'indirizzo pubblico del sito.</p>
+<h2>La funzione di verifica</h2>
+<p>Una funzione <code>view</code> legge i dati e non costa nulla a chi la chiama: nessun portafoglio, nessuna firma.</p>
+<pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+contract VerificaMinima {
+    mapping(bytes32 =&gt; uint256) private _idPerCodice; // keccak256(codice) =&gt; id, 0 = sconosciuto
+    mapping(uint256 =&gt; uint32) private _nBottiglie;
+    mapping(uint256 =&gt; bool) private _richiamato;
+
+    function verificaBottiglia(string calldata codice, uint32 n)
+        external
+        view
+        returns (bool esiste, bool richiamato, uint256 id)
+    {
+        id = _idPerCodice[keccak256(bytes(codice))];
+        if (id == 0) return (false, false, 0);
+        esiste = n &gt;= 1 &amp;&amp; n &lt;= _nBottiglie[id];
+        richiamato = _richiamato[id];
+    }
+}</code></pre><h2>Riga per riga</h2><ol><li>Tre elenchi di appoggio: dal codice (trasformato in numero con <code>keccak256</code>) al numero del lotto, poi bottiglie e richiamo di ciascun lotto. Nel contratto vero li riempiono <code>creaLotto</code>, <code>imbottiglia</code> e <code>richiama</code>.</li><li><code>view</code> significa "solo lettura"; restituisce tre valori con nome.</li><li>Se il codice non è noto, l'id vale 0 e rispondiamo "non esiste".</li><li><code>esiste</code> è vero se <code>n</code> è tra 1 e il numero di bottiglie del lotto: è il terzo controllo del capitolo 4.</li><li><code>richiamato</code> alimenta il bollino rosso.</li></ol>
+<h2>Chiamarla dalla pagina</h2>
+<pre><code>import { Contract, JsonRpcProvider } from "ethers";
+
+const abi = ["function verificaBottiglia(string codice, uint32 n) view returns (bool esiste, bool richiamato, uint256 id)"];
+const contratto = new Contract(INDIRIZZO, abi, new JsonRpcProvider(RPC_URL));
+
+// dall'indirizzo della pagina: /b/25A001/12
+const [, , codice, n] = window.location.pathname.split("/");
+const [esiste, richiamato] = await contratto.verificaBottiglia(codice, Number(n));</code></pre><h2>Riga per riga</h2><ol><li>Importiamo ethers, una libreria che parla con la catena.</li><li>L'<code>abi</code> è l'elenco delle funzioni che vogliamo chiamare, scritto in forma leggibile.</li><li><code>Contract</code> unisce indirizzo del contratto, abi e un collegamento alla rete (<code>INDIRIZZO</code> e <code>RPC_URL</code> sono i tuoi valori).</li><li>Dall'indirizzo del browser separiamo codice del lotto e numero della bottiglia.</li><li>Chiamiamo <code>verificaBottiglia</code> e riceviamo le risposte da mostrare.</li></ol>
+<p>Nella demo non serve neppure questo passaggio nel browser: il backend risponde a <code>/api/pubblico/bottiglia/&lt;lotto&gt;/&lt;n&gt;</code> con la verifica già fatta, e la pagina mostra il bollino.</p>
+<div class="try"><h2>Prova tu</h2><p>Con la versione completa del contratto nel tuo progetto Hardhat, scrivi un test che crea un lotto da 5 bottiglie e controlla che verificaBottiglia("25A001", 5) dia esiste = true e verificaBottiglia("25A001", 6) dia false.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Il QR contiene solo l'indirizzo /b/lotto/numero.</li><li>Una funzione view legge la catena gratis e senza portafoglio.</li><li>Il numero della bottiglia deve stare tra 1 e il numero di bottiglie imbottigliate.</li></ul></div><h2>Per approfondire</h2><ul><li><a href="https://hardhat.org/docs">Hardhat: console e test</a></li></ul><nav class="pn"><a href="c7.html">&larr; I documenti fuori dalla catena</a><a href="c9.html">Cosa manca per farlo davvero &rarr;</a></nav>
+</main>
+<footer>Dottore in Ingegneria Elettronica (V.O.) · Professore di Scienze e Tecnologie Informatiche</footer>
+</body>
+</html>
