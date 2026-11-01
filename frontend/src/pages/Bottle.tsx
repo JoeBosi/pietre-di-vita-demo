@@ -94,7 +94,7 @@ function Step({ p, data, fmt }: { p: Passo; data: Payload; fmt: (s: number) => s
       <span className="absolute -left-[2.9rem] top-0 bg-olive-600 text-white rounded-full p-1.5 [&>svg]:w-6 [&>svg]:h-6"><Icon /></span>
       <div className="rounded-xl bg-white border border-olive-100 p-4 space-y-2">
         <h3 className="text-xl font-semibold">{t(`ph.${p.fase}` as TKey)}</h3>
-        <p className="text-sm text-gray-600">{who ? t(who) : p.attore} · {fmt(p.timestamp)}</p>
+        <p className="text-sm text-gray-600">{who ? t(who) : p.attore} · {fmt(p.fase === 0 && data.lotto.data_raccolta ? data.lotto.data_raccolta : p.timestamp)}</p>
         <p className="text-base">{p.descrizione}</p>
         {d && (isImg ? (
           <a href={apiUrl(d.url)} target="_blank" rel="noreferrer"><img src={apiUrl(d.url)} alt={t('tl.photo')} className="h-28 w-auto rounded-lg border border-gray-200" loading="lazy" /></a>
