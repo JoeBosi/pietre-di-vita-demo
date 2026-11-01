@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useI18n, type TKey } from '../i18n';
 import { api, ApiError, apiUrl } from '../lib/api';
-import { deriveStato, proofForStep, type Passo, type Payload } from '../lib/verifica';
+import { deriveStato, pickText, proofForStep, type Passo, type Payload } from '../lib/verifica';
 import { Alert, Check, phaseIcons } from '../components/Icons';
 import { Tip } from '../components/Tip';
 
@@ -43,7 +43,7 @@ export default function Bottle() {
       {stato === 'recalled' && (
         <div role="alert" className="-mx-4 sm:mx-0 bg-red-700 text-white p-5 sm:rounded-xl space-y-2">
           <p className="flex items-center gap-2 text-2xl font-extrabold"><Alert />{t('st.rec')}</p>
-          <p className="text-lg"><strong>{t('st.recd')}:</strong> {l.motivo_richiamo ?? '—'}</p>
+          <p className="text-lg"><strong>{t('st.recd')}:</strong> {pickText(lang, l.motivo_richiamo, l.motivo_richiamo_en) || '—'}</p>
           <p>{t('st.recn')}</p>
         </div>
       )}
@@ -83,7 +83,7 @@ export default function Bottle() {
 }
 
 function Step({ p, data, fmt }: { p: Passo; data: Payload; fmt: (s: number) => string }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const Icon = phaseIcons[p.fase] ?? phaseIcons[0];
   const proof = proofForStep(data, p);
   const d = p.documento;
@@ -95,7 +95,7 @@ function Step({ p, data, fmt }: { p: Passo; data: Payload; fmt: (s: number) => s
       <div className="rounded-xl bg-white border border-olive-100 p-4 space-y-2">
         <h3 className="text-xl font-semibold">{t(`ph.${p.fase}` as TKey)}</h3>
         <p className="text-sm text-gray-600">{who ? t(who) : p.attore} · {fmt(p.fase === 0 && data.lotto.data_raccolta ? data.lotto.data_raccolta : p.timestamp)}</p>
-        <p className="text-base">{p.descrizione}</p>
+        <p className="text-base">{pickText(lang, p.descrizione, p.descrizione_en)}</p>
         {d && (isImg ? (
           <a href={apiUrl(d.url)} target="_blank" rel="noreferrer"><img src={apiUrl(d.url)} alt={t('tl.photo')} className="h-28 w-auto rounded-lg border border-gray-200" loading="lazy" /></a>
         ) : (

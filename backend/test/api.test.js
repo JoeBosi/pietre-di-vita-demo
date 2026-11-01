@@ -131,3 +131,120 @@ test('lots list requires login', async () => {
   const r = await agents.frantoio.get('/api/lotti').expect(200);
   assert.equal(r.body.lotti.length, 1);
 });
+
+// ---- login rate limiting (own app instance, fake clock) ----
+async function limiterCtx() {
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'olio-rl-'));
+  const clock = { t: 1_800_000_000_000 };
+  const env = {
+    INITIAL_PASSWORD_AGRICOLTORE: PW.agricoltore, INITIAL_PASSWORD_FRANTOIO: PW.frantoio,
+    INITIAL_PASSWORD_LABORATORIO: PW.laboratorio, INITIAL_PASSWORD_IMBOTTIGLIATORE: PW.imbottigliatore, SESSION_SECRET: 'test',
+  };
+  const cfg = { ...loadConfig(env, { dataDir: d, forceOffline: true }), now: () => clock.t };
+  const c = createApp(cfg);
+  const post = (user, pass, ip = '1.1.1.1') =>
+    request(c.app).post('/api/login').set('X-Forwarded-For', ip).send({ username: user, password: pass });
+  return { c, clock, post, done: () => { c.close(); fs.rmSync(d, { recursive: true, force: true }); } };
+}
+
+test('rate limit: 5 failures block even the correct password, then 15 min later it works', async () => {
+  const { clock, post, done } = await limiterCtx();
+  try {
+    for (let i = 0; i < 5; i++) await post('frantoio', 'wrong').expect(401);
+    const r = await post('frantoio', PW.frantoio).expect(429);
+    assert.equal(r.body.code, 'TOO_MANY_ATTEMPTS');
+    assert.equal(r.body.retry_after_seconds, 900);
+    assert.equal(r.headers['retry-after'], '900');
+    clock.t += 14 * 60 * 1000;
+    const r2 = await post('frantoio', PW.frantoio).expect(429);
+    assert.equal(r2.body.retry_after_seconds, 60);
+    clock.t += 60 * 1000;
+    await post('frantoio', PW.frantoio).expect(200);
+  } finally { done(); }
+});
+
+test('rate limit: window counts from the last failure and success resets', async () => {
+  const { clock, post, done } = await limiterCtx();
+  try {
+    for (let i = 0; i < 4; i++) await post('frantoio', 'wrong').expect(401);
+    await post('frantoio', PW.frantoio).expect(200); // success clears the key
+    for (let i = 0; i < 4; i++) await post('frantoio', 'wrong').expect(401);
+    await post('frantoio', 'wrong').expect(401); // 5th
+    await post('frantoio', PW.frantoio).expect(429);
+    // failures older than 15 minutes do not accumulate
+    clock.t += 16 * 60 * 1000;
+    await post('frantoio', 'wrong').expect(401);
+    await post('frantoio', PW.frantoio).expect(200);
+  } finally { done(); }
+});
+
+test('rate limit: keys per ip and username are independent', async () => {
+  const { post, done } = await limiterCtx();
+  try {
+    for (let i = 0; i < 5; i++) await post('frantoio', 'wrong', '1.1.1.1').expect(401);
+    await post('frantoio', PW.frantoio, '1.1.1.1').expect(429);
+    await post('frantoio', PW.frantoio, '2.2.2.2').expect(200); // other IP
+    await post('laboratorio', PW.laboratorio, '1.1.1.1').expect(200); // other username
+  } finally { done(); }
+});
+
+test('rate limit: unknown username behaves like a wrong password', async () => {
+  const { post, done } = await limiterCtx();
+  try {
+    for (let i = 0; i < 5; i++) await post('nessuno', 'wrong').expect(401);
+    const r = await post('nessuno', 'wrong').expect(429);
+    assert.equal(r.body.code, 'TOO_MANY_ATTEMPTS');
+    assert.equal(r.body.retry_after_seconds, 900);
+  } finally { done(); }
+});
+
+test('rate limit: per-IP cap of 30 failures across usernames', async () => {
+  const { post, done } = await limiterCtx();
+  try {
+    for (let i = 0; i < 30; i++) await post(`user${i}`, 'wrong', '9.9.9.9').expect(401);
+    await post('frantoio', PW.frantoio, '9.9.9.9').expect(429);
+    await post('frantoio', PW.frantoio, '8.8.8.8').expect(200);
+  } finally { done(); }
+});
+
+test('rate limit: wrong old password on cambia-password is limited too', async () => {
+  const { c, post, done } = await limiterCtx();
+  try {
+    const a = request.agent(c.app);
+    await a.post('/api/login').set('X-Forwarded-For', '3.3.3.3').send({ username: 'frantoio', password: PW.frantoio }).expect(200);
+    for (let i = 0; i < 5; i++) await a.post('/api/cambia-password').set('X-Forwarded-For', '3.3.3.3').send({ vecchia: 'bad', nuova: 'a-brand-new-pass-1' }).expect(401);
+    const r = await a.post('/api/cambia-password').set('X-Forwarded-For', '3.3.3.3').send({ vecchia: PW.frantoio, nuova: 'a-brand-new-pass-1' }).expect(429);
+    assert.equal(r.body.code, 'TOO_MANY_ATTEMPTS');
+    void post;
+  } finally { done(); }
+});
+
+test('bilingual: English texts are stored and exposed, absent ones are null', async () => {
+  const a = agents.agricoltore;
+  await a.post('/api/lotti').field('codice', 'EN001').field('cultivar', 'Frantoio').field('zona', 'Chianti').field('data_raccolta', '2025-10-18').field('kg_olive', '100').expect(200);
+  await agents.frantoio.post('/api/lotti/EN001/passi').field('fase', '1').field('descrizione', 'Molitura veloce').field('descrizione_en', 'Quick milling').expect(200);
+  await a.post('/api/lotti/EN001/richiamo').send({ motivo: 'Difetto', motivo_en: 'Defect' }).expect(200);
+  const r = await request(ctx.app).get('/api/pubblico/lotto/EN001').expect(200);
+  assert.equal(r.body.passi[0].descrizione_en, 'Harvest: Frantoio, Chianti, 100 kg');
+  assert.equal(r.body.passi[1].descrizione, 'Molitura veloce');
+  assert.equal(r.body.passi[1].descrizione_en, 'Quick milling');
+  assert.equal(r.body.lotto.motivo_richiamo_en, 'Defect');
+  await a.post('/api/lotti').field('codice', 'EN002').field('cultivar', 'X').field('zona', 'Y').field('data_raccolta', '2025-10-18').field('kg_olive', '5').expect(200);
+  await a.post('/api/lotti/EN002/richiamo').send({ motivo: 'Solo italiano' }).expect(200);
+  const r2 = await request(ctx.app).get('/api/pubblico/lotto/EN002').expect(200);
+  assert.equal(r2.body.lotto.motivo_richiamo_en, null);
+});
+
+test('migration adds English columns to an old database, idempotently', async () => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const { openDb } = await import('../src/db.js');
+  const f = path.join(dir, 'old.db');
+  const old = new DatabaseSync(f);
+  old.exec('CREATE TABLE passi (id INTEGER PRIMARY KEY, lotto_codice TEXT, fase INTEGER, descrizione TEXT NOT NULL, attore_username TEXT, attore_address TEXT, timestamp INTEGER, doc_id INTEGER, tx_hash TEXT); CREATE TABLE lotti (codice TEXT PRIMARY KEY, motivo_richiamo TEXT);');
+  old.close();
+  openDb(f).close();
+  const db2 = openDb(f);
+  assert.ok(db2.prepare('PRAGMA table_info(passi)').all().some((c) => c.name === 'descrizione_en'));
+  assert.ok(db2.prepare('PRAGMA table_info(lotti)').all().some((c) => c.name === 'motivo_richiamo_en'));
+  db2.close();
+});

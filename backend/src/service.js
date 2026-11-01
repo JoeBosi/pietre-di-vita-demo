@@ -28,6 +28,11 @@ function posInt(v, name, max = 4294967295) {
   return n;
 }
 
+function optText(v, name, max = 1000) {
+  if (v === undefined || v === null || v === '') return null;
+  return text(v, name, max);
+}
+
 function text(v, name, max = 500) {
   const s = typeof v === 'string' ? v.trim() : '';
   if (!s) throw httpError(400, `${name} is required`);
@@ -68,10 +73,10 @@ export function createService({ db, cfg, chain }) {
     );
   const dropFile = (d) => d && fs.rmSync(d.full, { force: true });
 
-  function insertPasso(codice, fase, descrizione, user, docId, txHash) {
+  function insertPasso(codice, fase, descrizione, user, docId, txHash, descrizioneEn = null) {
     db.prepare(
-      'INSERT INTO passi (lotto_codice,fase,descrizione,attore_username,attore_address,timestamp,doc_id,tx_hash) VALUES (?,?,?,?,?,?,?,?)',
-    ).run(codice, fase, descrizione, user.username, user.wallet_address ?? chain.addressOf(user.ruolo), Math.floor(Date.now() / 1000), docId, txHash);
+      'INSERT INTO passi (lotto_codice,fase,descrizione,attore_username,attore_address,timestamp,doc_id,tx_hash,descrizione_en) VALUES (?,?,?,?,?,?,?,?,?)',
+    ).run(codice, fase, descrizione, user.username, user.wallet_address ?? chain.addressOf(user.ruolo), Math.floor(Date.now() / 1000), docId, txHash, descrizioneEn);
   }
 
   const result = (extra) => ({ ok: true, offline: !chain.enabled, ...extra });
@@ -107,7 +112,8 @@ export function createService({ db, cfg, chain }) {
       'INSERT INTO lotti (codice,token_id,cultivar,zona,data_raccolta,kg_olive,tx_create) VALUES (?,?,?,?,?,?,?)',
     ).run(l.codice, out.tokenId, l.cultivar, l.zona, l.data_raccolta, l.kg_olive, out.txHash);
     const docId = doc ? insertDoc(doc) : null;
-    insertPasso(l.codice, 0, `Raccolta: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`, user, docId, out.txHash);
+    insertPasso(l.codice, 0, `Raccolta: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`, user, docId, out.txHash,
+      body.descrizione_en ? optText(body.descrizione_en, 'descrizione_en') : `Harvest: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`);
     return result({ codice: l.codice, token_id: out.tokenId, tx_hash: out.txHash });
   }
 
@@ -128,9 +134,10 @@ export function createService({ db, cfg, chain }) {
   async function aggiungiPasso(user, codice, body, file) {
     const lotto = needLotto(codice);
     const fase = Number(body.fase);
-    if (fase === 3) return imbottiglia(user, codice, { n_bottiglie: body.n_bottiglie, descrizione: body.descrizione }, file);
+    if (fase === 3) return imbottiglia(user, codice, { n_bottiglie: body.n_bottiglie, descrizione: body.descrizione, descrizione_en: body.descrizione_en }, file);
     checkFase(user, lotto, fase);
     const descrizione = text(body.descrizione, 'descrizione', 1000);
+    const descEn = optText(body.descrizione_en, 'descrizione_en');
     if (fase === 2 && !file) throw httpError(400, 'The lab report (pdf) is required for Analisi');
     const doc = storeFile(codice, fase, file);
     const out = await guarded(doc, async () => {
@@ -140,7 +147,7 @@ export function createService({ db, cfg, chain }) {
       return { txHash: r.txHash };
     });
     const docId = doc ? insertDoc(doc) : null;
-    insertPasso(codice, fase, descrizione, user, docId, out.txHash);
+    insertPasso(codice, fase, descrizione, user, docId, out.txHash, descEn);
     return result({ fase, tx_hash: out.txHash, documento_sha256: doc?.sha256 ?? null });
   }
 
@@ -157,7 +164,7 @@ export function createService({ db, cfg, chain }) {
     });
     db.prepare('UPDATE lotti SET n_bottiglie = ? WHERE codice = ?').run(n, codice);
     const docId = doc ? insertDoc(doc) : null;
-    insertPasso(codice, 3, (body.descrizione || '').trim() || `Bottled: ${n} bottles`, user, docId, out.txHash);
+    insertPasso(codice, 3, (body.descrizione || '').trim() || `Bottled: ${n} bottles`, user, docId, out.txHash, optText(body.descrizione_en, 'descrizione_en'));
     return result({ fase: 3, n_bottiglie: n, tx_hash: out.txHash, documento_sha256: doc?.sha256 ?? null });
   }
 
@@ -166,12 +173,13 @@ export function createService({ db, cfg, chain }) {
     const lotto = needLotto(codice);
     if (lotto.richiamato) throw httpError(409, 'Lot already recalled');
     const motivo = text(body.motivo, 'motivo', 1000);
+    const motivoEn = optText(body.motivo_en, 'motivo_en');
     const out = await guarded(null, async () => {
       if (!chain.enabled) return { txHash: null };
       if (!lotto.token_id) throw httpError(409, 'Lot has no token (it was created offline)');
       return chain.richiama(user.ruolo, lotto.token_id, motivo);
     });
-    db.prepare('UPDATE lotti SET richiamato = 1, motivo_richiamo = ? WHERE codice = ?').run(motivo, codice);
+    db.prepare('UPDATE lotti SET richiamato = 1, motivo_richiamo = ?, motivo_richiamo_en = ? WHERE codice = ?').run(motivo, motivoEn, codice);
     return result({ richiamato: true, tx_hash: out.txHash });
   }
 
@@ -188,6 +196,7 @@ export function createService({ db, cfg, chain }) {
       n_bottiglie: l.n_bottiglie,
       richiamato: !!l.richiamato,
       motivo_richiamo: l.motivo_richiamo,
+      motivo_richiamo_en: l.motivo_richiamo_en ?? null,
       tx_create: l.tx_create,
       tx_create_url: txUrl(l.tx_create),
       fasi_completate: passiOf(l.codice).map((p) => p.fase),
@@ -201,6 +210,7 @@ export function createService({ db, cfg, chain }) {
         fase: p.fase,
         fase_nome: FASI[p.fase],
         descrizione: p.descrizione,
+        descrizione_en: p.descrizione_en ?? null,
         attore: p.attore_username,
         attore_address: p.attore_address,
         timestamp: p.timestamp,

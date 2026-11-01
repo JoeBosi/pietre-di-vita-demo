@@ -9,6 +9,7 @@ import { ACTORS } from './config.js';
 import { openDb } from './db.js';
 import { createChain, httpError } from './chain.js';
 import { createService } from './service.js';
+import { createLimiter } from './ratelimit.js';
 
 export function ensureUsers(db, cfg, chain) {
   const ins = db.prepare('INSERT OR IGNORE INTO users (username,password_hash,ruolo,wallet_address,must_change_password) VALUES (?,?,?,?,1)');
@@ -60,22 +61,23 @@ export function createApp(cfg) {
       next();
     });
 
-  // Tiny in-memory login throttle: 10 failures per minute per IP.
-  const fails = new Map();
+  // Failed-login limiter: 5 per (ip+username) and 30 per ip, 15 minutes. Same answer for unknown users.
+  const limiter = createLimiter({ now: cfg.now ?? Date.now });
+  const tooMany = (secs) =>
+    Object.assign(httpError(429, 'Too many failed attempts, try again later'), { code: 'TOO_MANY_ATTEMPTS', retryAfter: secs });
 
   app.get('/api/health', (_req, res) => res.json({ ok: true, mode: chain.enabled ? 'onchain' : 'offline', offline: !chain.enabled }));
 
   app.post('/api/login', wrap((req) => {
-    const now = Date.now();
-    const f = (fails.get(req.ip) ?? []).filter((t) => now - t < 60000);
-    if (f.length >= 10) throw httpError(429, 'Too many attempts, try again in a minute');
     const { username, password } = req.body ?? {};
+    const wait = limiter.check(req.ip, username);
+    if (wait) throw tooMany(wait);
     const u = typeof username === 'string' && db.prepare('SELECT * FROM users WHERE username = ?').get(username);
     if (!u || typeof password !== 'string' || !bcrypt.compareSync(password, u.password_hash)) {
-      f.push(now);
-      fails.set(req.ip, f);
+      limiter.fail(req.ip, username);
       throw httpError(401, 'Invalid credentials');
     }
+    limiter.clear(req.ip, username);
     req.session = { uid: u.id };
     return { ok: true, user: publicUser(u) };
   }));
@@ -86,7 +88,14 @@ export function createApp(cfg) {
   app.get('/api/me', auth, (req, res) => res.json({ user: publicUser(req.user), offline: !chain.enabled }));
   app.post('/api/cambia-password', auth, wrap((req) => {
     const { vecchia, nuova } = req.body ?? {};
-    if (typeof vecchia !== 'string' || !bcrypt.compareSync(vecchia, req.user.password_hash)) throw httpError(401, 'Current password is wrong');
+    const lk = `pw:${req.user.username}`;
+    const wait = limiter.check(req.ip, lk);
+    if (wait) throw tooMany(wait);
+    if (typeof vecchia !== 'string' || !bcrypt.compareSync(vecchia, req.user.password_hash)) {
+      limiter.fail(req.ip, lk);
+      throw httpError(401, 'Current password is wrong');
+    }
+    limiter.clear(req.ip, lk);
     if (typeof nuova !== 'string' || nuova.length < 10) throw httpError(400, 'New password must be at least 10 characters');
     if (nuova === vecchia) throw httpError(400, 'New password must differ from the current one');
     db.prepare('UPDATE users SET password_hash = ?, must_change_password = 0 WHERE id = ?').run(bcrypt.hashSync(nuova, 10), req.user.id);
@@ -126,9 +135,10 @@ export function createApp(cfg) {
       status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
       message = err.code === 'LIMIT_FILE_SIZE' ? 'File too large (max 5 MB)' : err.message;
     }
+    if (err.retryAfter) res.set('Retry-After', String(err.retryAfter));
     if (status >= 500 && !err.status) console.error(err);
-    res.status(status).json({ ok: false, error: status >= 500 && !err.status ? 'Internal error' : message, code: err.code });
+    res.status(status).json({ ok: false, error: status >= 500 && !err.status ? 'Internal error' : message, code: err.code, ...(err.retryAfter ? { retry_after_seconds: err.retryAfter } : {}) });
   });
 
-  return { app, db, chain, svc, close: () => db.close() };
+  return { app, db, chain, svc, close: () => { limiter.stop(); db.close(); } };
 }

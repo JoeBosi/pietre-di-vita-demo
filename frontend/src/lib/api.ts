@@ -3,7 +3,7 @@ const BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? (import.met
 export const apiUrl = (p: string) => (p.startsWith('http') ? p : BASE + p);
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string, public code?: string) { super(message); }
+  constructor(public status: number, message: string, public code?: string, public retrySeconds?: number) { super(message); }
 }
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -14,7 +14,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError(0, 'NETWORK');
   }
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? 'ERROR', (data as { code?: string }).code);
+  if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? 'ERROR', (data as { code?: string }).code, (data as { retry_after_seconds?: number }).retry_after_seconds);
   return data as T;
 }
 

@@ -75,3 +75,7 @@ otherwise the DB only. Existing lots are skipped.
 ## Deploy
 
 `deploy/olio-backend.service` is an example systemd unit (not installed). The server binds to 127.0.0.1 only.
+
+## Login rate limiting and English texts
+
+Failed logins are limited server-side, in memory (reset on restart): after 5 failures within 15 minutes for the same client IP (`req.ip`, real client behind Caddy) and username, `POST /api/login` answers `429` with `{error, code:'TOO_MANY_ATTEMPTS', retry_after_seconds}` and a `Retry-After` header until 15 minutes after the last failure, even with the correct password; a successful login clears the counter. A coarser cap of 30 failures per IP in 15 minutes applies across usernames, and unknown usernames behave exactly like wrong passwords. Wrong old passwords on `/api/cambia-password` use the same limiter. Tests inject the clock with `cfg.now`. English texts: `passi.descrizione_en` and `lotti.motivo_richiamo_en` (nullable, added by an idempotent migration in `src/db.js`) are returned by the public endpoints and never touch the chain (the on-chain text stays Italian); on an existing database run `node scripts/backfill-en.js` once to fill the demo lots 25B001-25B003.

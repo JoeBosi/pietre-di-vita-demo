@@ -18,7 +18,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 function ErrorBox({ e }: { e: unknown }) {
   const { t } = useI18n();
   const i = errorInfo(e);
-  return <p role="alert" className="rounded-lg bg-red-50 border border-red-300 text-red-800 p-3">{t(i.key)}{i.detail && <span className="block text-xs text-red-600 mt-1">{i.detail}</span>}</p>;
+  return <p role="alert" className="rounded-lg bg-red-50 border border-red-300 text-red-800 p-3">{t(i.key, i.vars)}{i.detail && <span className="block text-xs text-red-600 mt-1">{i.detail}</span>}</p>;
 }
 
 export default function Filiera() {

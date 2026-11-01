@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deriveStato, proofForStep, type Passo, type Payload } from './verifica';
+import { deriveStato, pickText, proofForStep, type Passo, type Payload } from './verifica';
 
 const lotto = { codice: 'X', cultivar: 'Frantoio', zona: 'Z', data_raccolta: 0, kg_olive: 1, n_bottiglie: 10,
   richiamato: false, motivo_richiamo: null, tx_create: null, tx_create_url: null, fasi_completate: [0] };
@@ -26,4 +26,15 @@ describe('proofForStep', () => {
   it('bad', () => expect(proofForStep(mk({ hashMatch: [{ fase: 2, documento_id: 7, match: false }] }), passo)).toBe('bad'));
   it('none offline', () => expect(proofForStep(mk({}, {}, true), passo)).toBe('none'));
   it('none without document', () => expect(proofForStep(mk(), { ...passo, documento: null })).toBe('none'));
+});
+
+describe('pickText', () => {
+  it('English when present and lang is en', () => expect(pickText('en', 'ciao', 'hello')).toBe('hello'));
+  it('Italian when lang is it', () => expect(pickText('it', 'ciao', 'hello')).toBe('ciao'));
+  it('falls back to Italian when English missing or blank', () => {
+    expect(pickText('en', 'ciao', null)).toBe('ciao');
+    expect(pickText('en', 'ciao', undefined)).toBe('ciao');
+    expect(pickText('en', 'ciao', '  ')).toBe('ciao');
+  });
+  it('empty string when both missing', () => expect(pickText('en', null, null)).toBe(''));
 });

@@ -7,6 +7,7 @@ import zlib from 'node:zlib';
 import crypto from 'node:crypto';
 import { loadConfig, ROOT } from '../src/config.js';
 import { createApp } from '../src/app.js';
+import * as T from './demo-texts.js';
 
 function crc32(buf) {
   let c, crc = ~0;
@@ -54,7 +55,7 @@ const img = (name, rgb) => file(png(rgb), 'image/png', name);
 const LOTS = [
   { codice: '25B001', cultivar: 'Frantoio', zona: 'Colline del Chianti', data: '2025-10-18', kg: 1200, bottles: 360, rgb: [96, 120, 60] },
   { codice: '25B002', cultivar: 'Leccino', zona: 'Val di Chiana', data: '2025-10-25', kg: 900, bottles: 270, rgb: [120, 140, 70] },
-  { codice: '25B003', cultivar: 'Moraiolo', zona: 'Colline del Chianti', data: '2025-11-02', kg: 800, bottles: 240, rgb: [80, 100, 50], recall: 'Possibile difetto del tappo rilevato in un controllo di routine' },
+  { codice: '25B003', cultivar: 'Moraiolo', zona: 'Colline del Chianti', data: '2025-11-02', kg: 800, bottles: 240, rgb: [80, 100, 50], recall: T.RECALL_IT },
 ];
 
 const network = process.env.NETWORK || 'amoy';
@@ -78,12 +79,12 @@ console.log(chain.enabled ? 'Seeding on-chain' : `Seeding offline (DB only). ${n
 const user = (name) => db.prepare('SELECT * FROM users WHERE username = ?').get(name);
 for (const [i, L] of LOTS.entries()) {
   if (svc.getLotto(L.codice)) { console.log(`skip ${L.codice} (exists)`); continue; }
-  await svc.creaLotto(user('agricoltore'), { codice: L.codice, cultivar: L.cultivar, zona: L.zona, data_raccolta: L.data, kg_olive: L.kg }, img(`${L.codice}-harvest.png`, L.rgb));
-  await svc.aggiungiPasso(user('frantoio'), L.codice, { fase: 1, descrizione: `Molitura entro 12 ore dalla raccolta, pasta a 24 °C, resa 14%` }, img(`${L.codice}-mill.png`, L.rgb.map((v) => v + 30)));
-  await svc.aggiungiPasso(user('laboratorio'), L.codice, { fase: 2, descrizione: 'Acidità 0,2%, perossidi 7 meq O2/kg: extra vergine' },
+  await svc.creaLotto(user('agricoltore'), { codice: L.codice, cultivar: L.cultivar, zona: L.zona, data_raccolta: L.data, kg_olive: L.kg, descrizione_en: T.harvestEn(L) }, img(`${L.codice}-harvest.png`, L.rgb));
+  await svc.aggiungiPasso(user('frantoio'), L.codice, { fase: 1, descrizione: T.millIt, descrizione_en: T.millEn }, img(`${L.codice}-mill.png`, L.rgb.map((v) => v + 30)));
+  await svc.aggiungiPasso(user('laboratorio'), L.codice, { fase: 2, descrizione: T.analysisIt, descrizione_en: T.analysisEn },
     file(pdf([`Rapporto di analisi - lotto ${L.codice}`, 'Dati di prova inventati', 'Acidita: 0,2 %', 'Perossidi: 7 meq O2/kg', 'Esito: extra vergine']), 'application/pdf', `${L.codice}-report.pdf`));
-  await svc.imbottiglia(user('imbottigliatore'), L.codice, { n_bottiglie: L.bottles, descrizione: `Imbottigliate ${L.bottles} bottiglie, foto dell'etichetta allegata` }, img(`${L.codice}-label.png`, L.rgb.map((v) => v + 60)));
-  if (L.recall) await svc.richiama(user('agricoltore'), L.codice, { motivo: L.recall });
+  await svc.imbottiglia(user('imbottigliatore'), L.codice, { n_bottiglie: L.bottles, descrizione: T.bottlingIt(L.bottles), descrizione_en: T.bottlingEn(L.bottles) }, img(`${L.codice}-label.png`, L.rgb.map((v) => v + 60)));
+  if (L.recall) await svc.richiama(user('agricoltore'), L.codice, { motivo: L.recall, motivo_en: T.RECALL_EN });
   console.log(`seeded ${L.codice}${L.recall ? ' (recalled)' : ''}`);
 }
 close();

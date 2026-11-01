@@ -10,12 +10,12 @@ export interface Verifica {
 }
 export interface Documento { id: number; filename: string; mime: string; size: number; sha256: string; url: string }
 export interface Passo {
-  fase: number; fase_nome: string; descrizione: string; attore: string; timestamp: number;
+  fase: number; fase_nome: string; descrizione: string; descrizione_en?: string | null; attore: string; timestamp: number;
   tx_hash: string | null; tx_url: string | null; documento: Documento | null;
 }
 export interface Lotto {
   codice: string; cultivar: string; zona: string; data_raccolta: number; kg_olive: number;
-  n_bottiglie: number | null; richiamato: boolean; motivo_richiamo: string | null;
+  n_bottiglie: number | null; richiamato: boolean; motivo_richiamo: string | null; motivo_richiamo_en?: string | null;
   tx_create: string | null; tx_create_url: string | null; fasi_completate: number[];
 }
 export interface Payload {
@@ -40,4 +40,9 @@ export function proofForStep(p: Pick<Payload, 'verifica' | 'offline'>, passo: Pa
   const h = p.verifica.hashMatch.find((x) => x.documento_id === passo.documento!.id);
   if (!h) return 'none';
   return h.match ? 'ok' : 'bad';
+}
+
+/** Text in the UI language: English only when asked for and present, otherwise the (on-chain) Italian one. */
+export function pickText(lang: 'it' | 'en', it: string | null | undefined, en: string | null | undefined): string {
+  return lang === 'en' && en && en.trim() ? en : (it ?? '');
 }

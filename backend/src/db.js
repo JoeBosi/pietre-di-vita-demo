@@ -49,5 +49,11 @@ export function openDb(file) {
       tx_hash TEXT
     );
   `);
+  // Idempotent migrations (databases created before the English columns existed).
+  const addCol = (table, col) => {
+    if (!db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === col)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} TEXT`);
+  };
+  addCol('passi', 'descrizione_en');
+  addCol('lotti', 'motivo_richiamo_en');
   return db;
 }

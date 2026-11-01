@@ -2,11 +2,12 @@ import { ApiError } from './api';
 import type { TKey } from '../i18n';
 
 /** Map backend errors to a plain-language translation key plus optional raw detail. */
-export function errorInfo(e: unknown): { key: TKey; detail?: string } {
+export function errorInfo(e: unknown): { key: TKey; detail?: string; vars?: Record<string, number> } {
   if (!(e instanceof ApiError)) return { key: 'err.generic' };
   const m = e.message;
   if (e.status === 0) return { key: 'err.net' };
   if (e.code === 'MUST_CHANGE_PASSWORD') return { key: 'err.must' };
+  if (e.code === 'TOO_MANY_ATTEMPTS') return { key: 'err.toomany', vars: { minutes: Math.max(1, Math.ceil((e.retrySeconds ?? 900) / 60)) } };
   if (e.status === 429) return { key: 'err.many' };
   if (/Wrong phase order/i.test(m)) return { key: 'err.order', detail: m };
   if (/recalled/i.test(m)) return { key: 'err.recalled' };
