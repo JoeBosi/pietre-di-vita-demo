@@ -32,3 +32,5 @@ footer{border-top:1px solid #dfe6d2;background:#f4f7ee;padding:14px 16px;font-si
 .red{display:inline-block;background:#b3261e;color:#fff;font-weight:700;padding:2px 10px;border-radius:4px}
 .green{display:inline-block;background:#2f7d32;color:#fff;font-weight:700;padding:2px 10px;border-radius:4px}
 @media(min-width:700px){body{font-size:18px}h1{font-size:2.1rem}}
+.box{background:#fff8e6;border-left:4px solid #d9a21b;padding:10px 14px;border-radius:4px;margin:16px 0}.box h2{margin-top:0;font-size:1.05rem}.box code{overflow-wrap:anywhere}
+@media(max-width:700px){svg.fig{min-width:600px}}
