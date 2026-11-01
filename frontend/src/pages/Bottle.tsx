@@ -32,6 +32,7 @@ export default function Bottle() {
   if (!data) return <p className="py-10 text-center text-gray-600">{t('bt.loading')}</p>;
 
   const stato = deriveStato(data);
+  const mismatch = stato === 'unverifiable' && data.verifica.onchain && !data.offline && data.verifica.hashMatch.some((h) => !h.match);
   const fmt = (s: number) => new Date(s * 1000).toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const l = data.lotto;
   const num = data.bottiglia?.numero ?? Number(n);
@@ -57,8 +58,8 @@ export default function Bottle() {
       )}
       {stato === 'unverifiable' && (
         <div className="rounded-xl bg-amber-100 border-2 border-amber-500 text-amber-900 p-4 space-y-1">
-          <p className="text-lg font-semibold flex items-center gap-2"><Alert />{t('st.warn')}</p>
-          <p>{t('st.warnd')}</p>
+          <p className="text-lg font-semibold flex items-center gap-2"><Alert />{t(mismatch ? 'st.diff' : 'st.warn')}</p>
+          <p>{t(mismatch ? 'st.diffd' : 'st.warnd')}</p>
         </div>
       )}
 

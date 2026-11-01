@@ -222,12 +222,19 @@ export function createService({ db, cfg, chain }) {
       out.hashMatch = passi.map((p, i) => {
         if (!p.documento) return null;
         const onchainHash = c.passi[i]?.docHash ?? null;
+        // Hash the file actually stored on disk (not the value saved in the DB), so a swapped file is detected.
+        let fileSha = null;
+        try {
+          const row = db.prepare('SELECT stored_path FROM documenti WHERE id = ?').get(p.documento.id);
+          fileSha = crypto.createHash('sha256').update(fs.readFileSync(path.join(cfg.uploadDir, path.basename(row.stored_path)))).digest('hex');
+        } catch { /* missing file: treated as mismatch */ }
         return {
           fase: p.fase,
           documento_id: p.documento.id,
           dbSha256: p.documento.sha256,
+          fileSha256: fileSha,
           onchainHash,
-          match: !!onchainHash && onchainHash.toLowerCase() === '0x' + p.documento.sha256,
+          match: !!onchainHash && !!fileSha && fileSha === p.documento.sha256 && onchainHash.toLowerCase() === '0x' + fileSha,
         };
       }).filter(Boolean);
       out.statoCoerente = c.richiamato === !!lotto.richiamato && c.passi.length === passi.length;

@@ -15,13 +15,13 @@ const flagIT = (
 
 export function Layout() {
   const { lang, setLang, t } = useI18n();
-  const link = ({ isActive }: { isActive: boolean }) => `px-2 py-1 rounded ${isActive ? 'font-semibold text-olive-800 bg-olive-100' : 'text-gray-700'}`;
+  const link = ({ isActive }: { isActive: boolean }) => `px-2 py-1 rounded whitespace-nowrap ${isActive ? 'font-semibold text-olive-800 bg-olive-100' : 'text-gray-700'}`;
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-olive-100 bg-white">
         <div className="max-w-3xl mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link to="/" className="font-bold text-olive-700 text-xl mr-auto">Pietre di Vita</Link>
-          <nav className="flex gap-1 text-base">
+          <nav className="flex flex-wrap gap-1 text-base">
             <NavLink to="/" end className={link}>{t('nav.home')}</NavLink>
             <NavLink to="/come-funziona" className={link}>{t('nav.how')}</NavLink>
             <NavLink to="/filiera" className={link}>{t('nav.filiera')}</NavLink>
