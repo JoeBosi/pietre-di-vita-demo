@@ -24,7 +24,7 @@ Backend `.env` for the local chain: `RPC_URL=http://127.0.0.1:8545`, `CHAIN_ID=3
 
 ## Demo users and lots
 Users `agricoltore`, `frantoio`, `laboratorio`, `imbottigliatore`; initial passwords from `INITIAL_PASSWORD_*` (fallback `change-me-<user>`), changed at first login (min 10 chars).
-Lots `25A001` (360 bottles), `25A002` (270), `25A003` (240, recalled). Try `/api/pubblico/bottiglia/25A001/1`.
+Lots `25B001` (360 bottles), `25B002` (270), `25B003` (240, recalled). Try `/api/pubblico/bottiglia/25B001/1`.
 
 ## Deploy on Polygon Amoy (chain 80002)
 1. Create 5 wallets (deployer + 4 actors) and fund each with test POL from the Amoy faucet.
@@ -32,4 +32,4 @@ Lots `25A001` (360 bottles), `25A002` (270), `25A003` (240, recalled). Try `/api
 3. `npx hardhat run scripts/deploy.ts --network amoy` (writes `deployments/amoy.json`); optionally `scripts/verify.ts`.
 4. `backend/.env`: `RPC_URL`, `CHAIN_ID=80002`, `CONTRACT_ADDRESS`, the four `KEY_*`, `SESSION_SECRET`, `INITIAL_PASSWORD_*`, `PUBLIC_BASE_URL`.
 5. `npm run seed` (NETWORK defaults to `amoy`), then `npm start`.
-6. Verify: `/api/health` is onchain; `/api/pubblico/bottiglia/25A001/1` has `verifica.onchain` true and every `hashMatch.match` true; `25A003` shows as recalled. Never commit `.env` files.
+6. Verify: `/api/health` is onchain; `/api/pubblico/bottiglia/25B001/1` has `verifica.onchain` true and every `hashMatch.match` true; `25B003` shows as recalled. Never commit `.env` files.

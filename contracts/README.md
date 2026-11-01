@@ -28,6 +28,6 @@ npx hardhat run scripts/seed.ts   --network localhost
 ```
 `deploy.ts` grants the four roles to `PRODUTTORE_ADDRESS`, `FRANTOIO_ADDRESS`, `LABORATORIO_ADDRESS`, `IMBOTTIGLIATORE_ADDRESS` from `.env` (on hardhat/localhost it falls back to signers 1-4). It writes `deployments/<network>.json` and `abi/PietreDiVita.json`.
 
-`seed.ts` creates three fictional 2025 lots (`25A001`, `25A002`, `25A003`, the last one recalled), using the local signers as actors. Testnet (Polygon Amoy, chain 80002): set `AMOY_RPC_URL` and `DEPLOYER_PRIVATE_KEY`, then `--network amoy`. `scripts/verify.ts` verifies the source on the explorer (`POLYGONSCAN_API_KEY`).
+`seed.ts` creates three fictional 2025 lots (`25B001`, `25B002`, `25B003`, the last one recalled), using the local signers as actors. Testnet (Polygon Amoy, chain 80002): set `AMOY_RPC_URL` and `DEPLOYER_PRIVATE_KEY`, then `--network amoy`. `scripts/verify.ts` verifies the source on the explorer (`POLYGONSCAN_API_KEY`).
 
 Note: the EVM target is `cancun` (required by OpenZeppelin 5.x).

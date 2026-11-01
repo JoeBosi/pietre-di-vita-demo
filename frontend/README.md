@@ -30,6 +30,6 @@ bottle pages show the amber "not yet verifiable" badge; with a deployed contract
 
 ## Demo data
 
-Lots `25A001`, `25A002`, `25A003` (all phases done; `25A003` is recalled). Example bottles: `/b/25A001/1`, `/b/25A003/1`.
+Lots `25B001`, `25B002`, `25B003` (all phases done; `25B003` is recalled). Example bottles: `/b/25B001/1`, `/b/25B003/1`.
 Users: `agricoltore` (producer), `frantoio`, `laboratorio`, `imbottigliatore`; initial passwords come from the backend `.env`
 and must be changed at first login (min 10 characters).

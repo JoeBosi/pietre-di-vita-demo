@@ -52,9 +52,9 @@ const file = (buffer, mimetype, originalname) => ({ buffer, mimetype, originalna
 const img = (name, rgb) => file(png(rgb), 'image/png', name);
 
 const LOTS = [
-  { codice: '25A001', cultivar: 'Frantoio', zona: 'Colline del Chianti', data: '2025-10-18', kg: 1200, bottles: 360, rgb: [96, 120, 60] },
-  { codice: '25A002', cultivar: 'Leccino', zona: 'Val di Chiana', data: '2025-10-25', kg: 900, bottles: 270, rgb: [120, 140, 70] },
-  { codice: '25A003', cultivar: 'Moraiolo', zona: 'Colline del Chianti', data: '2025-11-02', kg: 800, bottles: 240, rgb: [80, 100, 50], recall: 'Possible bottle-cap defect found during a routine check' },
+  { codice: '25B001', cultivar: 'Frantoio', zona: 'Colline del Chianti', data: '2025-10-18', kg: 1200, bottles: 360, rgb: [96, 120, 60] },
+  { codice: '25B002', cultivar: 'Leccino', zona: 'Val di Chiana', data: '2025-10-25', kg: 900, bottles: 270, rgb: [120, 140, 70] },
+  { codice: '25B003', cultivar: 'Moraiolo', zona: 'Colline del Chianti', data: '2025-11-02', kg: 800, bottles: 240, rgb: [80, 100, 50], recall: 'Possibile difetto del tappo rilevato in un controllo di routine' },
 ];
 
 const network = process.env.NETWORK || 'amoy';
@@ -79,10 +79,10 @@ const user = (name) => db.prepare('SELECT * FROM users WHERE username = ?').get(
 for (const [i, L] of LOTS.entries()) {
   if (svc.getLotto(L.codice)) { console.log(`skip ${L.codice} (exists)`); continue; }
   await svc.creaLotto(user('agricoltore'), { codice: L.codice, cultivar: L.cultivar, zona: L.zona, data_raccolta: L.data, kg_olive: L.kg }, img(`${L.codice}-harvest.png`, L.rgb));
-  await svc.aggiungiPasso(user('frantoio'), L.codice, { fase: 1, descrizione: `Milled within 12 h, paste at 24 C, yield 14%` }, img(`${L.codice}-mill.png`, L.rgb.map((v) => v + 30)));
-  await svc.aggiungiPasso(user('laboratorio'), L.codice, { fase: 2, descrizione: 'Acidity 0.2%, peroxides 7 meq O2/kg: extra virgin' },
-    file(pdf([`Lab report - lot ${L.codice}`, 'Fictional demo data', 'Acidity: 0.2 %', 'Peroxides: 7 meq O2/kg', 'Result: extra virgin']), 'application/pdf', `${L.codice}-report.pdf`));
-  await svc.imbottiglia(user('imbottigliatore'), L.codice, { n_bottiglie: L.bottles, descrizione: `Bottled ${L.bottles} bottles, label photo attached` }, img(`${L.codice}-label.png`, L.rgb.map((v) => v + 60)));
+  await svc.aggiungiPasso(user('frantoio'), L.codice, { fase: 1, descrizione: `Molitura entro 12 ore dalla raccolta, pasta a 24 °C, resa 14%` }, img(`${L.codice}-mill.png`, L.rgb.map((v) => v + 30)));
+  await svc.aggiungiPasso(user('laboratorio'), L.codice, { fase: 2, descrizione: 'Acidità 0,2%, perossidi 7 meq O2/kg: extra vergine' },
+    file(pdf([`Rapporto di analisi - lotto ${L.codice}`, 'Dati di prova inventati', 'Acidita: 0,2 %', 'Perossidi: 7 meq O2/kg', 'Esito: extra vergine']), 'application/pdf', `${L.codice}-report.pdf`));
+  await svc.imbottiglia(user('imbottigliatore'), L.codice, { n_bottiglie: L.bottles, descrizione: `Imbottigliate ${L.bottles} bottiglie, foto dell'etichetta allegata` }, img(`${L.codice}-label.png`, L.rgb.map((v) => v + 60)));
   if (L.recall) await svc.richiama(user('agricoltore'), L.codice, { motivo: L.recall });
   console.log(`seeded ${L.codice}${L.recall ? ' (recalled)' : ''}`);
 }

@@ -27,13 +27,13 @@ export default function Home() {
         <p className="mt-3"><Link className="text-olive-700 underline" to="/come-funziona">{t('home.more')}</Link></p>
       </section>
       <section className="rounded-xl border-2 border-olive-600 bg-olive-50 p-4 flex flex-col sm:flex-row items-center gap-4">
-        <Link to="/b/25A001/1" aria-label={t('home.try')}>
-          <img src={apiUrl('/api/qr/25A001/1.png')} alt="QR 25A001 / 1" width={200} height={200} className="bg-white rounded-lg border border-olive-100" />
+        <Link to="/b/25B001/1" aria-label={t('home.try')}>
+          <img src={apiUrl('/api/qr/25B001/1.png')} alt="QR 25B001 / 1" width={200} height={200} className="bg-white rounded-lg border border-olive-100" />
         </Link>
         <div className="space-y-2 text-center sm:text-left">
-          <Link to="/b/25A001/1" className="text-xl font-semibold text-olive-800 underline">{t('home.try')}</Link>
+          <Link to="/b/25B001/1" className="text-xl font-semibold text-olive-800 underline">{t('home.try')}</Link>
           <p className="text-gray-700">{t('home.tryd')}</p>
-          <p><Link to="/b/25A003/1" className="text-red-700 underline">{t('home.recalled')}</Link></p>
+          <p><Link to="/b/25B003/1" className="text-red-700 underline">{t('home.recalled')}</Link></p>
         </div>
       </section>
       <Disclaimer />

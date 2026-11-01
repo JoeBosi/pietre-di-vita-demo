@@ -68,7 +68,7 @@ Uploads: `data/uploads/`, max 5 MB, pdf/jpg/png only (declared type and file sig
 
 ## Seed
 
-`npm run seed` creates the users and lots `25A001`..`25A003` (all phases, placeholder PNGs and a small PDF; `25A003` is recalled).
+`npm run seed` creates the users and lots `25B001`..`25B003` (all phases, placeholder PNGs and a small PDF; `25B003` is recalled).
 If the chain is configured and `../contracts/deployments/<NETWORK>.json` exists (default `amoy`) the lots go on-chain,
 otherwise the DB only. Existing lots are skipped.
 

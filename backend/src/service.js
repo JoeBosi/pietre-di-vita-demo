@@ -107,7 +107,7 @@ export function createService({ db, cfg, chain }) {
       'INSERT INTO lotti (codice,token_id,cultivar,zona,data_raccolta,kg_olive,tx_create) VALUES (?,?,?,?,?,?,?)',
     ).run(l.codice, out.tokenId, l.cultivar, l.zona, l.data_raccolta, l.kg_olive, out.txHash);
     const docId = doc ? insertDoc(doc) : null;
-    insertPasso(l.codice, 0, `Harvest: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`, user, docId, out.txHash);
+    insertPasso(l.codice, 0, `Raccolta: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`, user, docId, out.txHash);
     return result({ codice: l.codice, token_id: out.tokenId, tx_hash: out.txHash });
   }
 

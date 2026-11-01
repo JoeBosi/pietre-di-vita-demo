@@ -13,9 +13,9 @@ async function main() {
   const c = await ethers.getContractAt("PietreDiVita", dep.contract);
 
   const lots = [
-    { codice: "25A001", cultivar: "Frantoio", date: "2025-10-18", kg: 2100, temp: 24, resa: "14%", acidita: "0,22", perossidi: "6,1", bott: 520, richiamo: "" },
-    { codice: "25A002", cultivar: "Leccino", date: "2025-10-25", kg: 1200, temp: 25, resa: "13%", acidita: "0,28", perossidi: "7,4", bott: 300, richiamo: "" },
-    { codice: "25A003", cultivar: "Moraiolo", date: "2025-11-04", kg: 2500, temp: 23, resa: "15%", acidita: "0,31", perossidi: "9,8", bott: 600, richiamo: "Analisi di controllo non conforme" },
+    { codice: "25B001", cultivar: "Frantoio", date: "2025-10-18", kg: 2100, temp: 24, resa: "14%", acidita: "0,22", perossidi: "6,1", bott: 520, richiamo: "" },
+    { codice: "25B002", cultivar: "Leccino", date: "2025-10-25", kg: 1200, temp: 25, resa: "13%", acidita: "0,28", perossidi: "7,4", bott: 300, richiamo: "" },
+    { codice: "25B003", cultivar: "Moraiolo", date: "2025-11-04", kg: 2500, temp: 23, resa: "15%", acidita: "0,31", perossidi: "9,8", bott: 600, richiamo: "Analisi di controllo non conforme" },
   ];
   for (const l of lots) {
     const k = l.codice.toLowerCase();
