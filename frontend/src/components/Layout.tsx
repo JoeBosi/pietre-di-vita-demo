@@ -1,41 +1,49 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useI18n } from '../i18n';
 
 const flagUK = (
-  <svg width="22" height="15" viewBox="0 0 60 40" aria-hidden="true" className="rounded-sm border border-gray-300">
+  <svg width="24" height="16" viewBox="0 0 60 40" aria-hidden="true" className="rounded-sm border border-gray-300">
     <rect width="60" height="40" fill="#012169" /><path d="M0 0l60 40M60 0L0 40" stroke="#fff" strokeWidth="8" /><path d="M0 0l60 40M60 0L0 40" stroke="#C8102E" strokeWidth="3" />
     <path d="M30 0v40M0 20h60" stroke="#fff" strokeWidth="13" /><path d="M30 0v40M0 20h60" stroke="#C8102E" strokeWidth="8" />
   </svg>
 );
 const flagIT = (
-  <svg width="22" height="15" viewBox="0 0 3 2" aria-hidden="true" className="rounded-sm border border-gray-300">
+  <svg width="24" height="16" viewBox="0 0 3 2" aria-hidden="true" className="rounded-sm border border-gray-300">
     <rect width="1" height="2" fill="#009246" /><rect x="1" width="1" height="2" fill="#fff" /><rect x="2" width="1" height="2" fill="#ce2b37" />
   </svg>
+);
+const logo = (
+  <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#4c6422" /><path d="M9 23c0-8 5-13 14-13 0 9-5 14-13 14" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" /><path d="M9 23c3-5 6-8 9-9.5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>
 );
 
 export function Layout() {
   const { lang, setLang, t } = useI18n();
-  const link = ({ isActive }: { isActive: boolean }) => `px-2 py-1 rounded whitespace-nowrap ${isActive ? 'font-semibold text-olive-800 bg-olive-100' : 'text-gray-700'}`;
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  const link = ({ isActive }: { isActive: boolean }) =>
+    `flex-1 min-w-0 sm:flex-none text-center px-2 sm:px-3 py-2 min-h-11 flex items-center justify-center rounded-lg leading-tight text-[0.95rem] sm:text-base transition-colors ${isActive ? 'font-semibold text-white bg-olive-700' : 'text-olive-900 hover:bg-olive-100'}`;
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-olive-100 bg-white">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Link to="/" className="font-bold text-olive-700 text-xl mr-auto">Pietre di Vita</Link>
-          <nav className="flex flex-wrap gap-1 text-base">
+      <div className="bg-slate-900 px-4 py-2 text-center text-sm font-semibold leading-snug text-white" role="note"><span className="mr-2 rounded bg-amber-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-slate-900">{t('concept.tag')}</span>{t('concept.banner')}</div>
+      <header className="border-b border-olive-100 bg-white sticky top-0 z-10">
+        <div className="max-w-3xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link to="/" className="flex items-center gap-2 font-bold text-olive-800 text-xl mr-auto min-h-11">{logo}<span>Pietre di Vita</span></Link>
+          <button type="button" aria-label={t('lang.aria')} onClick={() => setLang(lang === 'it' ? 'en' : 'it')} className="order-2 sm:order-3 inline-flex items-center gap-2 border border-gray-300 rounded-lg px-3 min-h-11 text-base font-medium bg-white">
+            {lang === 'it' ? flagUK : flagIT}<span>{t('lang.switch')}</span>
+          </button>
+          <nav aria-label={t('nav.menu')} className="order-3 sm:order-2 w-full sm:w-auto flex gap-1">
             <NavLink to="/" end className={link}>{t('nav.home')}</NavLink>
             <NavLink to="/come-funziona" className={link}>{t('nav.how')}</NavLink>
             <NavLink to="/filiera" className={link}>{t('nav.filiera')}</NavLink>
           </nav>
-          <button type="button" onClick={() => setLang(lang === 'it' ? 'en' : 'it')} className="inline-flex items-center gap-2 border border-gray-300 rounded px-2 py-1 text-sm">
-            {lang === 'it' ? flagUK : flagIT}<span>{t('lang.switch')}</span>
-          </button>
         </div>
       </header>
-      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-6"><Outlet /></main>
-      <footer className="border-t border-olive-100 bg-white text-sm text-gray-600">
-        <div className="max-w-3xl mx-auto px-4 py-5 space-y-2">
-          <p>{t('disc.text')}</p>
-          <p>{t('foot.sig')}</p>
+      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-6 sm:py-10"><Outlet /></main>
+      <footer className="border-t border-olive-100 bg-white text-sm text-gray-700">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+          <p className="rounded-lg border border-amber-300 bg-amber-50 text-amber-900 px-3 py-2 font-medium">{t('disc.text')}</p>
+          <p className="text-xs text-gray-600">{t('foot.sig')}</p>
           <p><a className="text-olive-700 underline" href="https://www.giuseppebosi.com">{t('foot.site')}</a></p>
         </div>
       </footer>

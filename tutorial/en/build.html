@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build your own basic version of Pietre di Vita - Pietre di Vita</title>
+<link rel="stylesheet" href="style.css">
+<link rel="alternate" hreflang="it" href="../it/costruisci.html">
+</head>
+<body>
+<div class="concept" role="note"><b>Concept</b>Educational concept. Test network (Polygon Amoy), invented mill, sample data.</div>
+<div class="top"><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi</a><a class="lang" href="../it/costruisci.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div>
+<header class="h"><div class="brand">Olive oil traceability, step by step</div></header>
+<main>
+<h1>Build your own basic version of Pietre di Vita</h1>
+<div class="goal"><strong>Goal:</strong> build, step by step and starting from an empty folder, a basic working version of Pietre di Vita: a contract, its tests, a small server that records the steps and creates the QR code, and a public page that says green or red. The Pietre di Vita mill is fictional and all data is made up.</div>
+<p>This guide was <strong>really executed</strong> from start to finish in a clean folder, copying and pasting exactly the commands and code you see here. The outputs are the real ones from that run. At the end you find what was verified and what was not.</p>
+<h2>0. What you need</h2>
+<p>A computer with a terminal and <strong>Node.js 22</strong> (the program that runs JavaScript, from <a href="https://nodejs.org">nodejs.org</a>). Check the version:</p>
+<pre data-cmd="node" data-mode="fg"><code>node -v</code></pre>
+<pre class="out" data-out="node"><code>v22.23.1</code></pre>
+<p>You will use three terminal windows: one for the local test network, one for the server, one for commands. New words: <strong>Hardhat</strong> is the environment that compiles and tests contracts; <strong>OpenZeppelin</strong> is a collection of ready-made, audited contracts; <strong>ERC-721</strong> is the standard for unique tokens; <strong>SHA-256</strong> is the function that computes a file's fingerprint; <strong>RPC</strong> (Remote Procedure Call) is the address a program uses to talk to the chain; <strong>QR</strong> (Quick Response) code is the square pattern you scan with a phone.</p>
+<h2>1. The folder and the libraries</h2>
+<p>Create the folder and initialise the Node project:</p>
+<pre data-cmd="setup" data-mode="fg"><code>mkdir pietre-base
+cd pietre-base
+npm init -y</code></pre>
+<pre class="out" data-out="setup"><code>Wrote to /home/you/pietre-base/package.json:
+
+{
+  &quot;name&quot;: &quot;pietre-base&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+}</code></pre>
+<p>Install Hardhat 2 with its toolbox, then OpenZeppelin 5 and the server libraries (<code>express</code> for the web server, <code>qrcode</code> for the QR code, <code>dotenv</code> to read the <code>.env</code> file):</p>
+<pre data-cmd="inst1" data-mode="fg"><code>npm install --save-dev hardhat@2 @nomicfoundation/hardhat-toolbox@5</code></pre>
+<pre data-cmd="inst2" data-mode="fg"><code>npm install @openzeppelin/contracts@5 express@4 qrcode dotenv</code></pre>
+<p>The command may print security warnings about Hardhat's dependencies: they do not block anything. Now a <code>.gitignore</code> file (so secret or heavy files never end up in a git archive) and the subfolders:</p>
+<pre data-cmd="ign" data-mode="fg"><code>printf &#x27;node_modules\n.env\ncache\nartifacts\n&#x27; &gt; .gitignore
+mkdir contracts test scripts server</code></pre>
+<p>Create the Hardhat configuration file. The Amoy network is added only if you fill in the <code>.env</code> file:</p>
+<p><code>hardhat.config.js</code></p><pre data-file="hardhat.config.js"><code>require(&quot;@nomicfoundation/hardhat-toolbox&quot;);
+require(&quot;dotenv&quot;).config({ quiet: true });
+
+// Local node address. If port 8545 is busy on your computer, set RPC_URL in .env
+const networks = {
+  localhost: { url: process.env.RPC_URL || &quot;http://127.0.0.1:8545&quot; },
+};
+// The Amoy network is added only if you filled in .env
+if (process.env.AMOY_RPC_URL &amp;&amp; process.env.DEPLOYER_PRIVATE_KEY) {
+  networks.amoy = {
+    url: process.env.AMOY_RPC_URL,
+    chainId: 80002,
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY],
+  };
+}
+
+module.exports = {
+  solidity: {
+    version: &quot;0.8.24&quot;,
+    settings: { optimizer: { enabled: true, runs: 200 }, evmVersion: &quot;cancun&quot; },
+  },
+  networks,
+};
+</code></pre>
+<h2>2. The reduced contract</h2>
+<p>A <strong>smart contract</strong> is a program that lives on the chain: its rules are inside and apply to everybody. This contract does six things: creates a lot (an ERC-721 token), assigns roles (with OpenZeppelin's <code>AccessControl</code>: who harvests, who analyses, who bottles), records steps with the document's fingerprint, bottles with a range of bottle numbers, recalls the lot and answers the public question "is this bottle valid?". Function names are in Italian as in the full version; comments and messages are in English.</p>
+<p><code>contracts/MiniOlio.sol</code></p><pre data-file="contracts/MiniOlio.sol"><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import {ERC721} from &quot;@openzeppelin/contracts/token/ERC721/ERC721.sol&quot;;
+import {AccessControl} from &quot;@openzeppelin/contracts/access/AccessControl.sol&quot;;
+
+/// @title MiniOlio - a minimal olive oil traceability contract (teaching example, invented mill)
+/// Each lot is an ERC-721 token. Every phase is recorded with the hash of a document.
+contract MiniOlio is ERC721, AccessControl {
+    // The four phases, in the order they must be recorded
+    enum Fase { Raccolta, Molitura, Analisi, Imbottigliamento }
+
+    struct Passo {
+        Fase fase;
+        address attore;
+        uint64 quando;
+        bytes32 docHash; // fingerprint (SHA-256) of the document kept off-chain
+        string descrizione;
+    }
+
+    struct Lotto {
+        string codice;
+        uint32 primaBottiglia; // first bottle number (0 until bottled)
+        uint32 ultimaBottiglia; // last bottle number (0 until bottled)
+        bool richiamato;
+        string motivoRichiamo;
+    }
+
+    bytes32 public constant PRODUTTORE_ROLE = keccak256(&quot;PRODUTTORE_ROLE&quot;);
+    bytes32 public constant LABORATORIO_ROLE = keccak256(&quot;LABORATORIO_ROLE&quot;);
+    bytes32 public constant IMBOTTIGLIATORE_ROLE = keccak256(&quot;IMBOTTIGLIATORE_ROLE&quot;);
+
+    uint256 private _ultimoId;
+    mapping(uint256 =&gt; Lotto) private _lotti;
+    mapping(uint256 =&gt; Passo[]) private _passi;
+    mapping(bytes32 =&gt; uint256) private _idDaCodice; // keccak256(code) =&gt; token id
+
+    event LottoCreato(uint256 indexed id, string codice);
+    event PassoAggiunto(uint256 indexed id, Fase fase, address indexed attore, bytes32 docHash);
+    event Imbottigliato(uint256 indexed id, uint32 primaBottiglia, uint32 ultimaBottiglia);
+    event Richiamato(uint256 indexed id, string motivo);
+
+    constructor() ERC721(&quot;Pietre di Vita - lotto&quot;, &quot;PDV&quot;) {
+        // For this demo the deployer gets every role. In real life each role goes to a different person.
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(PRODUTTORE_ROLE, msg.sender);
+        _grantRole(LABORATORIO_ROLE, msg.sender);
+        _grantRole(IMBOTTIGLIATORE_ROLE, msg.sender);
+    }
+
+    /// Creates a lot: mints one token to the producer who calls.
+    function creaLotto(string calldata codice) external onlyRole(PRODUTTORE_ROLE) returns (uint256 id) {
+        require(bytes(codice).length &gt; 0, &quot;empty code&quot;);
+        require(_idDaCodice[keccak256(bytes(codice))] == 0, &quot;code already used&quot;);
+        id = ++_ultimoId;
+        _lotti[id].codice = codice;
+        _idDaCodice[keccak256(bytes(codice))] = id;
+        _safeMint(msg.sender, id);
+        emit LottoCreato(id, codice);
+    }
+
+    /// Records Raccolta, Molitura or Analisi. Phases must follow the order, no skipping.
+    function aggiungiPasso(uint256 id, Fase fase, string calldata descrizione, bytes32 docHash) external {
+        require(fase != Fase.Imbottigliamento, &quot;use imbottiglia&quot;);
+        _controllaRuolo(fase);
+        _controllaOrdine(id, fase);
+        _registra(id, fase, descrizione, docHash);
+    }
+
+    /// Records the bottling and the range of bottle numbers (first..last, both included).
+    function imbottiglia(uint256 id, uint32 prima, uint32 ultima, bytes32 docHash)
+        external
+        onlyRole(IMBOTTIGLIATORE_ROLE)
+    {
+        require(prima &gt;= 1 &amp;&amp; ultima &gt;= prima, &quot;bad range&quot;);
+        _controllaOrdine(id, Fase.Imbottigliamento);
+        _lotti[id].primaBottiglia = prima;
+        _lotti[id].ultimaBottiglia = ultima;
+        _registra(id, Fase.Imbottigliamento, &quot;Bottling&quot;, docHash);
+        emit Imbottigliato(id, prima, ultima);
+    }
+
+    /// Marks the lot as recalled. Anyone who then checks a bottle of the lot sees it.
+    function richiama(uint256 id, string calldata motivo) external onlyRole(PRODUTTORE_ROLE) {
+        _esiste(id);
+        require(!_lotti[id].richiamato, &quot;already recalled&quot;);
+        _lotti[id].richiamato = true;
+        _lotti[id].motivoRichiamo = motivo;
+        emit Richiamato(id, motivo);
+    }
+
+    // ---------- reads (free, no wallet needed) ----------
+
+    function lotto(uint256 id) external view returns (Lotto memory) {
+        _esiste(id);
+        return _lotti[id];
+    }
+
+    function passi(uint256 id) external view returns (Passo[] memory) {
+        _esiste(id);
+        return _passi[id];
+    }
+
+    function idDaCodice(string calldata codice) external view returns (uint256) {
+        return _idDaCodice[keccak256(bytes(codice))];
+    }
+
+    /// Public check of one bottle. valida is true only if the lot exists, is fully bottled,
+    /// the bottle number is inside the range and the lot is not recalled.
+    function verificaBottiglia(string calldata codice, uint32 n)
+        external
+        view
+        returns (bool valida, bool richiamato, uint256 id)
+    {
+        id = _idDaCodice[keccak256(bytes(codice))];
+        if (id == 0) return (false, false, 0);
+        Lotto storage l = _lotti[id];
+        bool inIntervallo = l.primaBottiglia != 0 &amp;&amp; n &gt;= l.primaBottiglia &amp;&amp; n &lt;= l.ultimaBottiglia;
+        richiamato = l.richiamato;
+        valida = inIntervallo &amp;&amp; !richiamato;
+    }
+
+    // ---------- internals ----------
+
+    function _esiste(uint256 id) private view {
+        require(id != 0 &amp;&amp; id &lt;= _ultimoId, &quot;lot not found&quot;);
+    }
+
+    function _controllaRuolo(Fase fase) private view {
+        if (fase == Fase.Analisi) _checkRole(LABORATORIO_ROLE);
+        else _checkRole(PRODUTTORE_ROLE);
+    }
+
+    function _controllaOrdine(uint256 id, Fase fase) private view {
+        _esiste(id);
+        require(uint8(fase) == _passi[id].length, &quot;phase out of order&quot;);
+    }
+
+    function _registra(uint256 id, Fase fase, string memory descrizione, bytes32 docHash) private {
+        _passi[id].push(Passo(fase, msg.sender, uint64(block.timestamp), docHash, descrizione));
+        emit PassoAggiunto(id, fase, msg.sender, docHash);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, AccessControl)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+}
+</code></pre>
+<p>Three things to notice. Phases must follow the order (<code>phase out of order</code> otherwise). A step is accepted only from someone with the right role. Only the document's <strong>fingerprint</strong> (<code>docHash</code>) goes on the chain: the document stays outside.</p>
+<p>Compile:</p>
+<pre data-cmd="compile" data-mode="fg"><code>npx hardhat compile</code></pre>
+<pre class="out" data-out="compile"><code>Compiled 18 Solidity files successfully (evm target: cancun).</code></pre>
+<h2>3. The tests</h2>
+<p>A test is a small program that tries the contract and says whether it behaves as expected. These run on a fake chain living only in memory:</p>
+<p><code>test/MiniOlio.test.js</code></p><pre data-file="test/MiniOlio.test.js"><code>const { expect } = require(&quot;chai&quot;);
+const { ethers } = require(&quot;hardhat&quot;);
+
+const Fase = { Raccolta: 0, Molitura: 1, Analisi: 2, Imbottigliamento: 3 };
+const hash = (text) =&gt; ethers.keccak256(ethers.toUtf8Bytes(text)); // any 32-byte value works in tests
+
+describe(&quot;MiniOlio&quot;, function () {
+  let olio, owner, lab, outsider;
+
+  beforeEach(async function () {
+    [owner, lab, outsider] = await ethers.getSigners();
+    olio = await ethers.deployContract(&quot;MiniOlio&quot;);
+    // Give the lab account only the laboratory role
+    await olio.grantRole(await olio.LABORATORIO_ROLE(), lab.address);
+    await olio.creaLotto(&quot;TEST-001&quot;);
+  });
+
+  async function fillAllPhases() {
+    await olio.aggiungiPasso(1, Fase.Raccolta, &quot;Harvest&quot;, hash(&quot;a&quot;));
+    await olio.aggiungiPasso(1, Fase.Molitura, &quot;Milling&quot;, hash(&quot;b&quot;));
+    await olio.connect(lab).aggiungiPasso(1, Fase.Analisi, &quot;Analysis&quot;, hash(&quot;c&quot;));
+    await olio.imbottiglia(1, 1, 500, hash(&quot;d&quot;));
+  }
+
+  it(&quot;creates a lot as an ERC-721 token owned by the producer&quot;, async function () {
+    expect(await olio.ownerOf(1)).to.equal(owner.address);
+    expect(await olio.idDaCodice(&quot;TEST-001&quot;)).to.equal(1n);
+  });
+
+  it(&quot;rejects a duplicate lot code&quot;, async function () {
+    await expect(olio.creaLotto(&quot;TEST-001&quot;)).to.be.revertedWith(&quot;code already used&quot;);
+  });
+
+  it(&quot;records the phases in order&quot;, async function () {
+    await fillAllPhases();
+    const passi = await olio.passi(1);
+    expect(passi.length).to.equal(4);
+    expect(passi[2].attore).to.equal(lab.address);
+  });
+
+  it(&quot;refuses a phase out of order&quot;, async function () {
+    await expect(olio.connect(lab).aggiungiPasso(1, Fase.Analisi, &quot;Too early&quot;, hash(&quot;x&quot;))).to.be.revertedWith(
+      &quot;phase out of order&quot;
+    );
+  });
+
+  it(&quot;refuses someone without the right role&quot;, async function () {
+    await expect(olio.connect(outsider).aggiungiPasso(1, Fase.Raccolta, &quot;Intruder&quot;, hash(&quot;x&quot;))).to.be.revertedWithCustomError(
+      olio,
+      &quot;AccessControlUnauthorizedAccount&quot;
+    );
+  });
+
+  it(&quot;keeps the lab out of the producer&#x27;s phases&quot;, async function () {
+    await expect(olio.connect(lab).aggiungiPasso(1, Fase.Raccolta, &quot;Wrong role&quot;, hash(&quot;x&quot;))).to.be.revertedWithCustomError(
+      olio,
+      &quot;AccessControlUnauthorizedAccount&quot;
+    );
+  });
+
+  it(&quot;validates only bottles inside the bottled range&quot;, async function () {
+    await fillAllPhases();
+    expect((await olio.verificaBottiglia(&quot;TEST-001&quot;, 1)).valida).to.equal(true);
+    expect((await olio.verificaBottiglia(&quot;TEST-001&quot;, 500)).valida).to.equal(true);
+    expect((await olio.verificaBottiglia(&quot;TEST-001&quot;, 501)).valida).to.equal(false);
+    expect((await olio.verificaBottiglia(&quot;TEST-001&quot;, 0)).valida).to.equal(false);
+  });
+
+  it(&quot;does not validate bottles of a lot that is not bottled yet&quot;, async function () {
+    expect((await olio.verificaBottiglia(&quot;TEST-001&quot;, 1)).valida).to.equal(false);
+  });
+
+  it(&quot;does not know an unknown lot&quot;, async function () {
+    const r = await olio.verificaBottiglia(&quot;NOPE&quot;, 1);
+    expect(r.valida).to.equal(false);
+    expect(r.id).to.equal(0n);
+  });
+
+  it(&quot;marks every bottle of a recalled lot as not valid&quot;, async function () {
+    await fillAllPhases();
+    await olio.richiama(1, &quot;Test recall&quot;);
+    const r = await olio.verificaBottiglia(&quot;TEST-001&quot;, 10);
+    expect(r.valida).to.equal(false);
+    expect(r.richiamato).to.equal(true);
+  });
+
+  it(&quot;lets only the producer recall&quot;, async function () {
+    await expect(olio.connect(lab).richiama(1, &quot;No&quot;)).to.be.revertedWithCustomError(olio, &quot;AccessControlUnauthorizedAccount&quot;);
+  });
+});
+</code></pre>
+<pre data-cmd="test" data-mode="fg"><code>npx hardhat test</code></pre>
+<pre class="out" data-out="test"><code>  MiniOlio
+    ✔ creates a lot as an ERC-721 token owned by the producer (93ms)
+    ✔ rejects a duplicate lot code (69ms)
+    ✔ records the phases in order (104ms)
+    ✔ refuses a phase out of order (46ms)
+    ✔ refuses someone without the right role
+    ✔ keeps the lab out of the producer&#x27;s phases
+    ✔ validates only bottles inside the bottled range (137ms)
+    ✔ does not validate bottles of a lot that is not bottled yet
+    ✔ does not know an unknown lot
+    ✔ marks every bottle of a recalled lot as not valid
+    ✔ lets only the producer recall
+
+
+  11 passing (6s)</code></pre>
+<h2>4. Local deploy</h2>
+<p><strong>Deploying</strong> means publishing the contract on a chain. First the script, which saves the contract address to a file (the server reads it from there):</p>
+<p><code>scripts/deploy.js</code></p><pre data-file="scripts/deploy.js"><code>const hre = require(&quot;hardhat&quot;);
+const fs = require(&quot;fs&quot;);
+
+async function main() {
+  const olio = await hre.ethers.deployContract(&quot;MiniOlio&quot;);
+  await olio.waitForDeployment();
+  const address = await olio.getAddress();
+  console.log(&quot;MiniOlio deployed to:&quot;, address, &quot;on network:&quot;, hre.network.name);
+
+  // Save the address: the backend reads it from here
+  fs.mkdirSync(&quot;deployments&quot;, { recursive: true });
+  fs.writeFileSync(`deployments/${hre.network.name}.json`, JSON.stringify({ address }, null, 2) + &quot;\n&quot;);
+}
+
+main().catch((e) =&gt; {
+  console.error(e);
+  process.exitCode = 1;
+});
+</code></pre>
+<p>In <strong>window 1</strong> start the local test network. It keeps running and prints 20 test accounts with keys known to everybody, good only for experiments (never use them on a real network). If port 8545 is already busy on your computer, use <code>--port 8599</code> and put <code>RPC_URL=http://127.0.0.1:8599</code> in the <code>.env</code> file of step 5:</p>
+<pre data-cmd="node_up" data-mode="bg"><code>npx hardhat node</code></pre>
+<p>In <strong>window 2</strong> (still in the <code>pietre-base</code> folder) publish the contract:</p>
+<pre data-cmd="deploy" data-mode="fg"><code>npx hardhat run scripts/deploy.js --network localhost</code></pre>
+<pre class="out" data-out="deploy"><code>MiniOlio deployed to: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0 on network: localhost</code></pre>
+<p>The address you see will differ from mine, and that is fine.</p>
+<h2>4b. On the Polygon Amoy test network</h2>
+<p><strong>Polygon Amoy</strong> is a public test network: its coins (test POL) are worthless and come free from "faucets" (test-coin dispensers, for example <a href="https://faucets.chain.link/polygon-amoy">Chainlink's</a>). Its Chain ID (network identification number) is <strong>80002</strong>. You can check that the public RPC address answers and really is Amoy (0x13882 in hexadecimal is 80002):</p>
+<pre data-cmd="chainid" data-mode="fg"><code>curl -s -X POST https://polygon-amoy-bor-rpc.publicnode.com -H &quot;content-type: application/json&quot; \
+  -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;eth_chainId&quot;,&quot;params&quot;:[]}&#x27;
+echo</code></pre>
+<pre class="out" data-out="chainid"><code>{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;result&quot;:&quot;0x13882&quot;,&quot;id&quot;:1}</code></pre>
+<p>To publish on Amoy you need a new account created only for tests (for example with MetaMask, never your real one), some test POL and these lines in the <code>.env</code> file. <strong>Never write a real key</strong>, never paste one in a chat and never put <code>.env</code> in git (our <code>.gitignore</code> already excludes it):</p>
+<pre><code>AMOY_RPC_URL=https://polygon-amoy-bor-rpc.publicnode.com
+DEPLOYER_PRIVATE_KEY=private key of a NEW test-only wallet
+PRIVATE_KEY=the same key, read by the server
+RPC_URL=https://polygon-amoy-bor-rpc.publicnode.com
+NETWORK=amoy</code></pre>
+<p>Then <code>npx hardhat run scripts/deploy.js --network amoy</code>. This step was <strong>not executed</strong> on purpose (it would need an account with funds): it is the same procedure as the local deploy on another network; see the final section.</p>
+<h2>5. The mini server</h2>
+<p>The server (Node with Express) does three things: computes a file's SHA-256 fingerprint and writes it on the chain together with the step; creates a bottle's QR code; shows the public page by reading the contract. First the connection to the chain:</p>
+<p><code>server/chain.js</code></p><pre data-file="server/chain.js"><code>const { ethers } = require(&quot;ethers&quot;);
+const fs = require(&quot;fs&quot;);
+const path = require(&quot;path&quot;);
+
+const root = path.join(__dirname, &quot;..&quot;);
+const network = process.env.NETWORK || &quot;localhost&quot;;
+const rpcUrl = process.env.RPC_URL || &quot;http://127.0.0.1:8545&quot;;
+
+const abi = JSON.parse(
+  fs.readFileSync(path.join(root, &quot;artifacts/contracts/MiniOlio.sol/MiniOlio.json&quot;), &quot;utf8&quot;)
+).abi;
+const { address } = JSON.parse(fs.readFileSync(path.join(root, `deployments/${network}.json`), &quot;utf8&quot;));
+
+const provider = new ethers.JsonRpcProvider(rpcUrl);
+
+// Read-only contract: enough for the public page, no key needed
+const reader = new ethers.Contract(address, abi, provider);
+
+// Contract that can write: needs a signer.
+// On a local node we use the node&#x27;s first test account. On Amoy we use PRIVATE_KEY from .env.
+async function writer() {
+  const signer = process.env.PRIVATE_KEY
+    ? new ethers.Wallet(process.env.PRIVATE_KEY, provider)
+    : await provider.getSigner(0);
+  return new ethers.Contract(address, abi, signer);
+}
+
+module.exports = { reader, writer, address, ethers };
+</code></pre>
+<p>Then the server. The <code>/api</code> part is private and needs a secret code (<code>API_TOKEN</code>) in the header; <code>/qr</code> and <code>/b</code> are public and read-only:</p>
+<p><code>server/index.js</code></p><pre data-file="server/index.js"><code>require(&quot;dotenv&quot;).config({ quiet: true });
+const express = require(&quot;express&quot;);
+const crypto = require(&quot;crypto&quot;);
+const QRCode = require(&quot;qrcode&quot;);
+const { reader, writer, address, ethers } = require(&quot;./chain&quot;);
+
+const PORT = process.env.PORT || 3900;
+const BASE_URL = process.env.BASE_URL || `http://127.0.0.1:${PORT}`;
+const API_TOKEN = process.env.API_TOKEN;
+if (!API_TOKEN) throw new Error(&quot;Set API_TOKEN in .env&quot;);
+
+const FASI = { Raccolta: 0, Molitura: 1, Analisi: 2 };
+const app = express();
+
+// Express 4 does not catch errors thrown in async handlers: this wrapper passes them to the error handler
+const h = (fn) =&gt; (req, res, next) =&gt; fn(req, res, next).catch(next);
+
+// SHA-256 of the received bytes, as a 0x... value that fits a bytes32
+const sha256Hex = (buf) =&gt; &quot;0x&quot; + crypto.createHash(&quot;sha256&quot;).update(buf).digest(&quot;hex&quot;);
+const esc = (s) =&gt; String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, (c) =&gt; ({ &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[c]));
+
+// ---------- private API (needs the token) ----------
+const api = express.Router();
+api.use((req, res, next) =&gt; {
+  if (req.get(&quot;x-api-token&quot;) !== API_TOKEN) return res.status(401).json({ error: &quot;bad token&quot; });
+  next();
+});
+api.use(express.json());
+api.use(express.raw({ type: &quot;application/octet-stream&quot;, limit: &quot;20mb&quot; }));
+
+api.post(&quot;/hash&quot;, (req, res) =&gt; {
+  res.json({ sha256: sha256Hex(req.body) });
+});
+
+api.post(&quot;/lotto&quot;, h(async (req, res) =&gt; {
+  const c = await writer();
+  const tx = await c.creaLotto(req.body.codice);
+  await tx.wait();
+  res.json({ ok: true, tx: tx.hash, id: Number(await c.idDaCodice(req.body.codice)) });
+}));
+
+// Body = the document (PDF, photo, ...). The server hashes it and writes only the hash on-chain.
+api.post(&quot;/lotto/:codice/passo&quot;, h(async (req, res) =&gt; {
+  const fase = FASI[req.query.fase];
+  if (fase === undefined) return res.status(400).json({ error: &quot;fase must be Raccolta, Molitura or Analisi&quot; });
+  const c = await writer();
+  const id = await c.idDaCodice(req.params.codice);
+  const docHash = sha256Hex(req.body);
+  const tx = await c.aggiungiPasso(id, fase, String(req.query.descrizione || &quot;&quot;), docHash);
+  await tx.wait();
+  res.json({ ok: true, tx: tx.hash, docHash });
+}));
+
+api.post(&quot;/lotto/:codice/imbottiglia&quot;, h(async (req, res) =&gt; {
+  const c = await writer();
+  const id = await c.idDaCodice(req.params.codice);
+  const docHash = sha256Hex(req.body);
+  const tx = await c.imbottiglia(id, Number(req.query.prima), Number(req.query.ultima), docHash);
+  await tx.wait();
+  res.json({ ok: true, tx: tx.hash, docHash });
+}));
+
+api.post(&quot;/lotto/:codice/richiama&quot;, h(async (req, res) =&gt; {
+  const c = await writer();
+  const id = await c.idDaCodice(req.params.codice);
+  const tx = await c.richiama(id, req.body.motivo);
+  await tx.wait();
+  res.json({ ok: true, tx: tx.hash });
+}));
+
+// Errors from the chain (wrong role, wrong order...) come back as a readable 400
+api.use((err, req, res, next) =&gt; {
+  res.status(400).json({ error: err.reason || err.shortMessage || err.message });
+});
+app.use(&quot;/api&quot;, api);
+
+// ---------- public part (no token, read only) ----------
+app.get(&quot;/qr/:codice/:n.png&quot;, h(async (req, res) =&gt; {
+  const url = `${BASE_URL}/b/${encodeURIComponent(req.params.codice)}/${Number(req.params.n)}`;
+  res.type(&quot;png&quot;).send(await QRCode.toBuffer(url, { width: 300, margin: 2 }));
+}));
+
+app.get(&quot;/b/:codice/:n&quot;, h(async (req, res) =&gt; {
+  const codice = req.params.codice;
+  const n = Number(req.params.n);
+  if (!Number.isInteger(n) || n &lt; 0) return res.status(400).send(&quot;Bad bottle number&quot;);
+
+  const [valida, richiamato, id] = await reader.verificaBottiglia(codice, n);
+  let verdetto = &quot;green&quot;;
+  let titolo = &quot;Valid bottle&quot;;
+  if (id === 0n) { verdetto = &quot;red&quot;; titolo = &quot;Unknown lot&quot;; }
+  else if (richiamato) { verdetto = &quot;red&quot;; titolo = &quot;Recalled lot: do not use&quot;; }
+  else if (!valida) { verdetto = &quot;red&quot;; titolo = &quot;This bottle number does not exist in the lot&quot;; }
+
+  let passiHtml = &quot;&quot;;
+  if (id !== 0n) {
+    const passi = await reader.passi(id);
+    passiHtml = &quot;&lt;ol&gt;&quot; + passi.map((p) =&gt;
+      `&lt;li&gt;${[&quot;Harvest&quot;, &quot;Milling&quot;, &quot;Analysis&quot;, &quot;Bottling&quot;][Number(p.fase)]}: ${esc(p.descrizione)}` +
+      ` &lt;small&gt;(${new Date(Number(p.quando) * 1000).toISOString().slice(0, 10)}, document hash ${esc(p.docHash.slice(0, 12))}...)&lt;/small&gt;&lt;/li&gt;`
+    ).join(&quot;&quot;) + &quot;&lt;/ol&gt;&quot;;
+  }
+
+  res.send(`&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;Bottle ${esc(codice)} / ${n}&lt;/title&gt;
+&lt;style&gt;body{font:18px/1.5 system-ui,sans-serif;max-width:36rem;margin:0 auto;padding:16px;background:#fff;color:#222}
+.v{padding:16px;border-radius:8px;color:#fff;font-weight:700}.green{background:#2f7d32}.red{background:#b3261e}small{color:#555}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;p&gt;Pietre di Vita (invented mill, teaching demo) - bottle ${n} of lot ${esc(codice)}&lt;/p&gt;
+&lt;div class=&quot;v ${verdetto}&quot;&gt;${verdetto === &quot;green&quot; ? &quot;GREEN&quot; : &quot;RED&quot;}: ${titolo}&lt;/div&gt;${passiHtml}
+&lt;p&gt;&lt;small&gt;Read directly from the contract ${esc(address)}.&lt;/small&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;`);
+}));
+
+// Last safety net for the public pages
+app.use((err, req, res, next) =&gt; {
+  res.status(500).send(&quot;Could not read the blockchain. Try again later.&quot;);
+});
+
+app.listen(PORT, &quot;127.0.0.1&quot;, () =&gt; console.log(`Server on ${BASE_URL}, contract ${address}`));
+</code></pre>
+<p>The <code>.env.example</code> file is the template for the secret <code>.env</code> file (which must never be shared):</p>
+<p><code>.env.example</code></p><pre data-file=".env.example"><code># Copy this file to .env and fill it in. Never commit .env.
+API_TOKEN=put-a-long-random-string-here
+# Local node (default values, you can leave them out):
+# RPC_URL=http://127.0.0.1:8545
+# NETWORK=localhost
+# For Polygon Amoy (a test network) only:
+# AMOY_RPC_URL=https://polygon-amoy-bor-rpc.publicnode.com
+# DEPLOYER_PRIVATE_KEY=private key of a NEW wallet used only for tests
+# PRIVATE_KEY=same key, used by the server
+# NETWORK=amoy
+# RPC_URL=https://polygon-amoy-bor-rpc.publicnode.com
+</code></pre>
+<p>Create your own <code>.env</code> with a random code and start the server in <strong>window 3</strong>:</p>
+<pre data-cmd="env" data-mode="fg"><code>echo &quot;API_TOKEN=$(openssl rand -hex 16)&quot; &gt; .env</code></pre>
+<pre data-cmd="serve" data-mode="bg"><code>node server/index.js</code></pre>
+<pre class="out" data-out="serve"><code>Server on http://127.0.0.1:3900, contract 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0</code></pre>
+<p>Security note: in this basic version the server uses a single account that holds all roles. In a real supply chain each role has a different account (chapter 6 of the tutorial).</p>
+<h2>6. Try it: one bottle from start to end</h2>
+<p>In window 2 (set the <code>TOKEN</code> variable again if you open a new terminal). The <code>referto.txt</code> file is a fake lab report; the server computes its fingerprint, which matches the <code>sha256sum</code> command:</p>
+<pre data-cmd="t1" data-mode="fg"><code>TOKEN=$(grep API_TOKEN .env | cut -d= -f2)
+echo &quot;Lab report, invented data, acidity 0.2&quot; &gt; referto.txt
+curl -s -X POST localhost:3900/api/hash -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/octet-stream&quot; --data-binary @referto.txt
+echo
+sha256sum referto.txt</code></pre>
+<pre class="out" data-out="t1"><code>{&quot;sha256&quot;:&quot;0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6&quot;}
+5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6  referto.txt</code></pre>
+<p>Create lot <code>DEMO-001</code> (an ERC-721 token number 1):</p>
+<pre data-cmd="t2" data-mode="fg"><code>curl -s -X POST localhost:3900/api/lotto -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/json&quot; -d &#x27;{&quot;codice&quot;:&quot;DEMO-001&quot;}&#x27;
+echo</code></pre>
+<pre class="out" data-out="t2"><code>{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0xac5e6008abe67e61c2b76e084da431178b7d20eb8304a40d1bd2d4484712e350&quot;,&quot;id&quot;:1}</code></pre>
+<p>Record the three phases (for simplicity we use the same sample file for all):</p>
+<pre data-cmd="t3" data-mode="fg"><code>for FASE in Raccolta Molitura Analisi; do
+  curl -s -X POST &quot;localhost:3900/api/lotto/DEMO-001/passo?fase=$FASE&amp;descrizione=Step%20$FASE&quot; \
+    -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/octet-stream&quot; --data-binary @referto.txt
+  echo
+done</code></pre>
+<pre class="out" data-out="t3"><code>{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0x3a8ed7060ccd069c5af84045d998f5d499471f8d026476a2746d3be1f96eabc8&quot;,&quot;docHash&quot;:&quot;0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6&quot;}
+{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0x05127f463f0e0420d91f6059393f5d9394a2621f96e56691adb59565f502b4fb&quot;,&quot;docHash&quot;:&quot;0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6&quot;}
+{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0x2367b0d4277633b2765c2c6e6760862422f1dd0f7753b02d9be7eb14705a0b83&quot;,&quot;docHash&quot;:&quot;0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6&quot;}</code></pre>
+<p>Try repeating the harvest: the contract refuses, because the order has moved on. An unknown lot is refused too:</p>
+<pre data-cmd="t4" data-mode="fg"><code>curl -s -X POST &quot;localhost:3900/api/lotto/DEMO-001/passo?fase=Raccolta&quot; \
+  -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/octet-stream&quot; --data-binary @referto.txt
+echo</code></pre>
+<pre class="out" data-out="t4"><code>{&quot;error&quot;:&quot;phase out of order&quot;}</code></pre>
+<pre data-cmd="t11" data-mode="fg"><code>curl -s -X POST localhost:3900/api/lotto/DEMO-002/passo?fase=Raccolta -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/octet-stream&quot; --data-binary @referto.txt
+echo</code></pre>
+<pre class="out" data-out="t11"><code>{&quot;error&quot;:&quot;lot not found&quot;}</code></pre>
+<p>Bottle bottles 1 to 100:</p>
+<pre data-cmd="t5" data-mode="fg"><code>curl -s -X POST &quot;localhost:3900/api/lotto/DEMO-001/imbottiglia?prima=1&amp;ultima=100&quot; \
+  -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/octet-stream&quot; --data-binary @referto.txt
+echo</code></pre>
+<pre class="out" data-out="t5"><code>{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0x2f8c77859e776e1556158de26638909a7a4cd8e473fd02fd66d9950b2da09579&quot;,&quot;docHash&quot;:&quot;0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6&quot;}</code></pre>
+<p>Create the QR code for bottle 7 (a PNG image, openable with any image viewer) and check the file:</p>
+<pre data-cmd="t6" data-mode="fg"><code>curl -s -o bottiglia-7.png localhost:3900/qr/DEMO-001/7.png
+file bottiglia-7.png</code></pre>
+<pre class="out" data-out="t6"><code>bottiglia-7.png: PNG image data, 300 x 300, 8-bit/color RGBA, non-interlaced</code></pre>
+<p>The QR contains the address of the public page <code>http://127.0.0.1:3900/b/DEMO-001/7</code>. Open it in a browser, or query the page from the terminal. Green for bottles in the range, red for a number outside it and for an unknown lot:</p>
+<pre data-cmd="t7" data-mode="fg"><code>for B in 7 100 101; do
+  echo -n &quot;bottle $B: &quot;
+  curl -s localhost:3900/b/DEMO-001/$B | grep -o &#x27;class=&quot;v [a-z]*&quot;&gt;[^&lt;]*&#x27;
+done
+echo -n &quot;unknown lot: &quot;
+curl -s localhost:3900/b/NOPE/1 | grep -o &#x27;class=&quot;v [a-z]*&quot;&gt;[^&lt;]*&#x27;</code></pre>
+<pre class="out" data-out="t7"><code>bottle 7: class=&quot;v green&quot;&gt;GREEN: Valid bottle
+bottle 100: class=&quot;v green&quot;&gt;GREEN: Valid bottle
+bottle 101: class=&quot;v red&quot;&gt;RED: This bottle number does not exist in the lot
+unknown lot: class=&quot;v red&quot;&gt;RED: Unknown lot</code></pre>
+<p>Checking a document: the page shows the beginning of the recorded fingerprint. If you compute the fingerprint of the original file you get the same beginning; if somebody changes even one digit of the report, the fingerprint is different:</p>
+<pre data-cmd="t8" data-mode="fg"><code>curl -s localhost:3900/b/DEMO-001/7 | grep -o &quot;document hash 0x[0-9a-f]*&quot; | head -1
+sha256sum referto.txt | cut -c1-12
+echo &quot;Lab report, invented data, acidity 0.9&quot; &gt; referto-modificato.txt
+sha256sum referto-modificato.txt | cut -c1-12</code></pre>
+<pre class="out" data-out="t8"><code>document hash 0x5c94f9833f
+5c94f9833f90
+90cf4aaf52da</code></pre>
+<p>Now the producer recalls the lot: from that moment bottle 7 turns red too, without touching the bottle or the QR code:</p>
+<pre data-cmd="t9" data-mode="fg"><code>curl -s -X POST localhost:3900/api/lotto/DEMO-001/richiama \
+  -H &quot;x-api-token: $TOKEN&quot; -H &quot;content-type: application/json&quot; -d &#x27;{&quot;motivo&quot;:&quot;Demo recall&quot;}&#x27;
+echo
+curl -s localhost:3900/b/DEMO-001/7 | grep -o &#x27;class=&quot;v [a-z]*&quot;&gt;[^&lt;]*&#x27;</code></pre>
+<pre class="out" data-out="t9"><code>{&quot;ok&quot;:true,&quot;tx&quot;:&quot;0xa90b0d805f0e3d36e78ca1d893700cae0b8af824471c64db1a5ae151c75a1db0&quot;}
+class=&quot;v red&quot;&gt;RED: Recalled lot: do not use</code></pre>
+<p>Finally, whoever lacks the secret code cannot write:</p>
+<pre data-cmd="t10" data-mode="fg"><code>curl -s -X POST localhost:3900/api/hash -H &quot;x-api-token: wrong&quot; -d x
+echo</code></pre>
+<pre class="out" data-out="t10"><code>{&quot;error&quot;:&quot;bad token&quot;}</code></pre>
+<h2>7. What we really verified / what we did not</h2>
+<p><strong>Verified, running everything from an empty folder with Node 22 on a Linux server:</strong></p>
+<ul><li>installing the libraries with the commands on this page;</li><li>compiling and the contract's 11 tests, all passing;</li><li>the deploy on a local Hardhat network, the running server and the calls of steps 5 and 6 with the outputs shown here;</li><li>the QR code generated as a 300x300 PNG and decoded with a QR reader: it contains the expected address;</li><li>valid bottle (green), bottle out of range, unknown lot and recalled lot (red), phase order, roles and wrong secret code;</li><li>the code on this page is extracted automatically from the blocks you see and re-run: no hand copying.</li></ul>
+<p><strong>Not verified:</strong></p>
+<ul><li>deploying and using it on Polygon Amoy with a funded account: only checked that the public RPC address answers with Chain ID 80002;</li><li>the QR scanned with a real phone (decoded only by software) and the page opened in a graphical browser (read only with <code>curl</code>);</li><li>use with different accounts per role: the tests cover roles, but the server uses a single account;</li><li>the server's security for public use (no rate limits, no HTTPS, no check on uploaded file type);</li><li>real documents: all data is made up and the report is a text file.</li><li>on this computer port 8545 was taken by another program, so the run used port 8599; with free ports the commands are as written above.</li></ul>
+<p>The final working project is also in the repository's <code>olio/starter</code> folder, without <code>node_modules</code> and without <code>.env</code>: after <code>npm install</code> you can run everything again.</p>
+<p>This is the basic version. A real supply chain lacks many things, listed in <a href="c9.html">chapter 9</a>; the full version used in the demo also has a database, role-based login and recall handling.</p>
+<div class="try"><h2>Try it yourself</h2><p>Change the number of bottles, for example from 1 to 50, and check bottle 51 again. Then read the existing test that checks the lab cannot recall a lot, and write a similar one for the bottler.</p></div>
+<div class="learn"><h2>What you learned</h2><ul><li>A lot is an ERC-721 token and its phases are recorded with documents' fingerprints, not the documents.</li><li>Roles and phase order are contract rules, proven by tests.</li><li>The QR code holds only an address; green or red is decided by the chain, and a recall applies to every bottle of the lot.</li></ul></div>
+<h2>Learn more</h2>
+<ul><li><a href="https://hardhat.org/docs">Hardhat</a></li><li><a href="https://docs.openzeppelin.com/contracts/5.x/access-control">OpenZeppelin AccessControl</a></li><li><a href="https://docs.polygon.technology/">Polygon documentation</a></li></ul>
+<nav class="pn"><a href="c9.html">&larr; What is missing to do it for real</a><a href="index.html">Contents</a></nav>
+</main>
+<footer>Prof. Giuseppe Bosi, Computer Science and Technology</footer>
+</body>
+</html>

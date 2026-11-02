@@ -60,8 +60,14 @@ const it = {
   'err.recalled': 'Questo lotto è stato richiamato: non si può aggiungere altro.', 'err.login': 'Utente o password non corretti.', 'err.session': 'Sessione scaduta: accedi di nuovo.', 'err.net': 'Non riesco a raggiungere il server. Riprova.',
   'err.dup': 'Esiste già un lotto con questo codice.', 'err.must': 'Prima devi cambiare la password.', 'err.wrongpw': 'La password attuale non è corretta.', 'err.generic': 'Qualcosa è andato storto', 'err.many': 'Troppi tentativi: riprova tra un minuto.', 'err.toomany': 'Troppi tentativi sbagliati. Per sicurezza l\'accesso è bloccato: riprova tra {minutes} min.',
   'offline.note': 'Server in modalità prova: i passi non vengono scritti sul registro pubblico.',
-  'foot.sig': 'Prof. Giuseppe Bosi · Dottore in Ingegneria Elettronica · Professore di Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
+  'concept.tag': 'Concept', 'concept.banner': 'Concept a titolo didattico. Rete di prova (Polygon Amoy), frantoio inventato, dati di esempio.',
+  'foot.sig': 'Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Carico...',
+  'home.cta': 'Prova con una bottiglia di esempio', 'home.ctad': 'Un clic e vedi la storia completa di una bottiglia, come la vedrebbe un cliente.', 'home.badge': 'Dimostrazione: frantoio inventato, dati di prova',
+  'home.qrt': 'Oppure inquadra il codice con il telefono', 'home.steps': 'In tre passi', 'home.recd': 'Vedi cosa succede con un lotto richiamato',
+  'bt.retry': 'Riprova', 'bt.try': 'Prova con la bottiglia di esempio', 'bt.neth': 'Server non raggiungibile',
+  'fi.who': 'Area riservata', 'fi.guest': 'Questa area serve solo a chi lavora nella filiera. Se vuoi solo guardare una bottiglia non ti serve nessun accesso.', 'fi.guestcta': 'Vai alla bottiglia di esempio', 'fi.sign': 'Accesso per la filiera',
+  'bt.lotdata': 'Varietà', 'bt.zone': 'Zona', 'bt.steps': '{n} passi registrati', 'tl.proof': 'Prova', 'nav.menu': 'Menu principale', 'lang.aria': 'Cambia lingua',
 } as const;
 
 type Key = keyof typeof it;
@@ -125,8 +131,14 @@ const en: Record<Key, string> = {
   'err.recalled': 'This lot was recalled: nothing more can be added.', 'err.login': 'Wrong user or password.', 'err.session': 'Session expired: please sign in again.', 'err.net': 'Cannot reach the server. Try again.',
   'err.dup': 'A lot with this code already exists.', 'err.must': 'You must change your password first.', 'err.wrongpw': 'The current password is wrong.', 'err.generic': 'Something went wrong', 'err.many': 'Too many attempts: try again in a minute.', 'err.toomany': 'Too many wrong attempts. For safety, sign-in is blocked: try again in {minutes} min.',
   'offline.note': 'Server in test mode: steps are not written on the public record.',
-  'foot.sig': 'Prof. Giuseppe Bosi · Master\'s-level degree in Electronic Engineering (5-year Italian Laurea, EQF level 7) · Teacher of Computer Science and Technology', 'foot.site': 'www.giuseppebosi.com',
+  'concept.tag': 'Concept', 'concept.banner': 'Educational concept. Test network (Polygon Amoy), invented mill, sample data.',
+  'foot.sig': 'Prof. Giuseppe Bosi, Computer Science and Technology', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Loading...',
+  'home.cta': 'Try it with a sample bottle', 'home.ctad': 'One click and you see the full story of a bottle, as a customer would see it.', 'home.badge': 'Demonstration: fictional mill, test data',
+  'home.qrt': 'Or scan the code with your phone', 'home.steps': 'In three steps', 'home.recd': 'See what happens with a recalled lot',
+  'bt.retry': 'Try again', 'bt.try': 'Try the sample bottle', 'bt.neth': 'Server not reachable',
+  'fi.who': 'Restricted area', 'fi.guest': 'This area is only for people working in the supply chain. If you just want to look at a bottle you do not need to sign in.', 'fi.guestcta': 'Go to the sample bottle', 'fi.sign': 'Supply chain sign-in',
+  'bt.lotdata': 'Variety', 'bt.zone': 'Area', 'bt.steps': '{n} steps recorded', 'tl.proof': 'Proof', 'nav.menu': 'Main menu', 'lang.aria': 'Change language',
 };
 
 export type Lang = 'it' | 'en';

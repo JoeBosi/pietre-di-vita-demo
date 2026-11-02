@@ -2,9 +2,15 @@
 @theme {
   --color-olive-50: #f4f7ec;
   --color-olive-100: #e6edd2;
+  --color-olive-200: #d3dfb0;
   --color-olive-600: #5f7a2a;
   --color-olive-700: #4c6422;
   --color-olive-800: #3b4f1b;
+  --color-olive-900: #2a3913;
 }
-html { font-size: 18px; }
-body { background: #fcfcf8; color: #1f2417; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+html { font-size: 17px; scroll-behavior: smooth; }
+body { background: #faf9f3; color: #1f2417; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #5f7a2a; outline-offset: 2px; }
+@keyframes pulse-soft { 50% { opacity: .45; } }
+.skeleton { background: #e6e3d6; border-radius: .75rem; animation: pulse-soft 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } html { scroll-behavior: auto; } }

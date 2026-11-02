@@ -8,8 +8,8 @@ import type { Lotto, Payload } from '../lib/verifica';
 type Kind = 'new' | 'ship' | 'recall' | 'mill' | 'lab' | 'bottle';
 interface Outcome { offline?: boolean; tx_hash?: string | null }
 
-const input = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-base bg-white';
-const btn = 'rounded-lg bg-olive-700 text-white px-4 py-2 font-semibold disabled:opacity-50';
+const input = 'w-full rounded-lg border border-gray-400 px-3 py-2.5 min-h-12 text-base bg-white';
+const btn = 'rounded-xl bg-olive-700 hover:bg-olive-800 text-white px-5 min-h-12 py-2 text-lg font-semibold disabled:opacity-50 w-full sm:w-auto';
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return <label className="block space-y-1"><span className="font-medium">{label}</span>{children}{hint && <span className="block text-sm text-gray-500">{hint}</span>}</label>;
@@ -31,11 +31,16 @@ export default function Filiera() {
   }, []);
   useEffect(loadMe, [loadMe]);
 
-  if (user === undefined) return <p className="text-gray-600">{t('loading')}</p>;
+  if (user === undefined) return <div role="status" className="space-y-4"><span className="sr-only">{t('loading')}</span><div className="skeleton h-10 w-2/3" /><div className="skeleton h-64 w-full max-w-md" /></div>;
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-olive-800">{t('fi.title')}</h1>
-      {!user && <Login onDone={loadMe} />}
+      {!user && (
+        <>
+          <p className="rounded-xl bg-olive-50 border border-olive-100 p-4 text-gray-800 space-y-2"><span className="block">{t('fi.guest')}</span><Link to="/b/25B001/1" className="inline-flex items-center min-h-11 text-olive-800 font-semibold underline">{t('fi.guestcta')}</Link></p>
+          <Login onDone={loadMe} />
+        </>
+      )}
       {user && (
         <>
           <div className="flex flex-wrap items-center gap-3 rounded-xl bg-olive-50 border border-olive-100 p-3">
@@ -59,7 +64,8 @@ function Login({ onDone }: { onDone: () => void }) {
     try { await postJson('/api/login', { username: u, password: p }); onDone(); } catch (x) { setErr(x); } finally { setBusy(false); }
   };
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-xl bg-white border border-olive-100 p-4 max-w-md">
+    <form onSubmit={submit} className="space-y-4 rounded-xl bg-white border border-olive-100 shadow-sm p-5 max-w-md">
+      <h2 className="text-xl font-semibold">{t('fi.sign')}</h2>
       <p className="text-gray-700">{t('fi.intro')}</p>
       <Field label={t('fi.user')}><input className={input} value={u} onChange={(e) => setU(e.target.value)} autoComplete="username" required /></Field>
       <Field label={t('fi.pass')}><input className={input} type="password" value={p} onChange={(e) => setP(e.target.value)} autoComplete="current-password" required /></Field>
