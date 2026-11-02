@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
+import { BuildBox } from '../components/BuildBox';
 import { VerifySection } from '../components/VerifySection';
 import { BottleExperience } from '../components/BottleExperience';
 import { OliveScene } from '../components/OliveScene';
@@ -40,6 +41,8 @@ export default function Home() {
       </section>
 
       <VerifySection />
+
+      <BuildBox />
     </div>
   );
 }

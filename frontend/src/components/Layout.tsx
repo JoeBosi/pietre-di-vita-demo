@@ -36,6 +36,7 @@ export function Layout() {
             <NavLink to="/" end className={link}>{t('nav.home')}</NavLink>
             <NavLink to="/come-funziona" className={link}>{t('nav.how')}</NavLink>
             <NavLink to="/filiera" className={link}>{t('nav.filiera')}</NavLink>
+            <a href={lang === 'it' ? '/tutorial/it/costruisci.html' : '/tutorial/en/build.html'} className="flex-1 min-w-0 sm:flex-none text-center px-2 sm:px-3 py-2 min-h-11 flex items-center justify-center rounded-lg font-bold text-[#6D28D9] hover:bg-violet-50 text-[0.95rem] sm:text-base"><span aria-hidden="true" className="mr-1 font-mono">&lt;/&gt;</span>{t('coding')}</a>
           </nav>
         </div>
       </header></div>
