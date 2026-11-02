@@ -28,6 +28,9 @@ cd frontend && npm install && npm run dev
 ```
 Backend `.env` for the local chain: `RPC_URL=http://127.0.0.1:8545`, `CHAIN_ID=31337`, `CONTRACT_ADDRESS=<"contract" in contracts/deployments/localhost.json>`, `KEY_PRODUTTORE`/`KEY_FRANTOIO`/`KEY_LABORATORIO`/`KEY_IMBOTTIGLIATORE` = Hardhat default private keys of accounts #1..#4 (public test keys), `NETWORK=localhost` (only for `npm run seed`, selects `deployments/<NETWORK>.json`; default `amoy`). To use another port for the node, set `LOCALHOST_RPC_URL` when deploying.
 
+## Trial mode ("Prova la filiera")
+Anyone can try the supply chain at `/filiera#prova` with no password: the visitor picks the four roles in turn and records the steps on a private `PROVA-xxxx` lot, then opens their own bottle (public page + QR). The server wallets pay for the transactions, so it is capped; all limits are env variables (defaults): `DEMO_RUNS_PER_IP_DAY=3`, `DEMO_REQ_PER_MIN=60`, `DEMO_TX_PER_DAY=150` (global), `DEMO_MIN_POL=0.5` (an actor wallet below this pauses the trial; reported in `/api/health` as `lowFunds`, in the log and in `data/demo-status.json`), `DEMO_ENABLED=1`. Trial lots use a separate cookie, can only be written by their own session, and are excluded from every list. A full path costs 4 transactions, about 0.021 POL. Details: `docs/specifiche.md`.
+
 ## Offline vs on-chain
 - On-chain: `RPC_URL` and `CONTRACT_ADDRESS` set. The chain call goes first, the DB is written only on success; `/api/health` reports `mode: "onchain"`.
 - Offline: leave them empty. DB only, `tx_hash` null, `/api/health` reports `mode: "offline"`, public verification returns `onchain: false`. Offline lots cannot be pushed on-chain later.

@@ -92,7 +92,7 @@ export function createService({ db, cfg, chain }) {
     }
   }
 
-  async function creaLotto(user, body, file) {
+  async function creaLotto(user, body, file, opts = {}) {
     if (user.ruolo !== 'PRODUTTORE') throw httpError(403, 'Only the producer can create lots');
     const l = {
       codice: text(body.codice, 'codice', 32),
@@ -102,6 +102,8 @@ export function createService({ db, cfg, chain }) {
       kg_olive: posInt(body.kg_olive, 'kg_olive'),
     };
     if (!CODE_RE.test(l.codice)) throw httpError(400, 'codice may only contain letters, digits, - and _');
+    // PROVA-* is reserved for the public trial mode.
+    if (!opts.demo && /^prova-/i.test(l.codice)) throw httpError(400, 'Codes starting with PROVA- are reserved for the trial mode');
     if (getLotto(l.codice)) throw httpError(409, 'Lot code already exists');
     const doc = storeFile(l.codice, 0, file);
     const out = await guarded(doc, async () => {
@@ -109,8 +111,8 @@ export function createService({ db, cfg, chain }) {
       return chain.creaLotto(user.ruolo, l, toBytes32(doc?.sha256));
     });
     db.prepare(
-      'INSERT INTO lotti (codice,token_id,cultivar,zona,data_raccolta,kg_olive,tx_create) VALUES (?,?,?,?,?,?,?)',
-    ).run(l.codice, out.tokenId, l.cultivar, l.zona, l.data_raccolta, l.kg_olive, out.txHash);
+      'INSERT INTO lotti (codice,token_id,cultivar,zona,data_raccolta,kg_olive,tx_create,demo) VALUES (?,?,?,?,?,?,?,?)',
+    ).run(l.codice, out.tokenId, l.cultivar, l.zona, l.data_raccolta, l.kg_olive, out.txHash, opts.demo ? 1 : 0);
     const docId = doc ? insertDoc(doc) : null;
     insertPasso(l.codice, 0, `Raccolta: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`, user, docId, out.txHash,
       body.descrizione_en ? optText(body.descrizione_en, 'descrizione_en') : `Harvest: ${l.cultivar}, ${l.zona}, ${l.kg_olive} kg`);
@@ -270,8 +272,8 @@ export function createService({ db, cfg, chain }) {
   }
 
   function listLotti() {
-    return db.prepare('SELECT codice FROM lotti ORDER BY rowid').all().map((r) => lottoView(getLotto(r.codice)));
+    return db.prepare('SELECT codice FROM lotti WHERE demo = 0 ORDER BY rowid').all().map((r) => lottoView(getLotto(r.codice)));
   }
 
-  return { creaLotto, aggiungiPasso, imbottiglia, richiama, pubblicoLotto, pubblicoBottiglia, listLotti, getLotto };
+  return { creaLotto, aggiungiPasso, imbottiglia, richiama, pubblicoLotto, pubblicoBottiglia, listLotti, getLotto, lottoInfo: (codice) => lottoView(needLotto(codice)) };
 }

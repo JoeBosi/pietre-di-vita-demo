@@ -28,7 +28,7 @@ export function Layout() {
       <div className="sticky top-0 z-40"><div className="bg-slate-900 px-3 py-1 text-center text-xs sm:text-sm sm:px-4 sm:py-2 font-semibold leading-snug text-white" role="note"><span className="mr-2 rounded bg-amber-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-slate-900">{t('concept.tag')}</span><span className="sm:hidden">{t('concept.short')}</span><span className="hidden sm:inline">{t('concept.banner')}</span></div>
       <header className="border-b border-olive-100 bg-white">
         <div className="max-w-3xl mx-auto px-4 py-1.5 sm:py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-y-2">
-          <Link to="/" className="flex items-center gap-2 font-bold text-olive-800 text-xl mr-auto min-h-11">{logo}<span>{t('brand')}</span></Link>
+          <Link to="/" className="flex items-center gap-2 font-bold text-olive-800 text-lg sm:text-xl mr-auto min-h-11">{logo}<span>{t('brand')}</span></Link>
           <button type="button" aria-label={t('lang.aria')} onClick={() => setLang(lang === 'it' ? 'en' : 'it')} className="order-2 sm:order-3 inline-flex items-center gap-2 border border-gray-300 rounded-lg px-3 min-h-11 text-base font-medium bg-white">
             {lang === 'it' ? flagUK : flagIT}<span>{t('lang.switch')}</span>
           </button>
@@ -42,7 +42,6 @@ export function Layout() {
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-6 sm:py-10"><Outlet /></main>
       <footer className="border-t border-olive-100 bg-white text-sm text-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
-          <p className="rounded-lg border border-amber-300 bg-amber-50 text-amber-900 px-3 py-2 font-medium">{t('disc.text')}</p>
           <p className="text-xs text-gray-600">{t('foot.sig')}</p>
           <p><a className="text-olive-700 underline" href="https://www.giuseppebosi.com">{t('foot.site')}</a></p>
         </div>

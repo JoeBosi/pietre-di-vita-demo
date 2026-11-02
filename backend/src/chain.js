@@ -59,6 +59,11 @@ export function createChain(cfg) {
     enabled: true,
     explorerBase: cfg.explorerBase,
     addressOf: (ruolo) => wallets[ruolo]?.address ?? null,
+    /** Native balance (wei, bigint) of an actor wallet. */
+    async balanceOf(ruolo) {
+      if (!wallets[ruolo]) throw httpError(503, `No wallet key configured for ${ruolo}`);
+      return provider.getBalance(wallets[ruolo].address);
+    },
     async creaLotto(ruolo, l, docHash) {
       const args = [l.codice, l.cultivar, l.zona, l.data_raccolta, l.kg_olive];
       if (creaWithDoc) args.push(docHash);

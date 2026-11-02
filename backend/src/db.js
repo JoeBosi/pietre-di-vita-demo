@@ -54,6 +54,11 @@ export function openDb(file) {
     if (!db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === col)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} TEXT`);
   };
   addCol('passi', 'descrizione_en');
+  if (!db.prepare('PRAGMA table_info(lotti)').all().some((c) => c.name === 'demo')) db.exec('ALTER TABLE lotti ADD COLUMN demo INTEGER NOT NULL DEFAULT 0');
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS demo_runs (day TEXT NOT NULL, ip_hash TEXT NOT NULL, runs INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, ip_hash));
+    CREATE TABLE IF NOT EXISTS demo_tx (day TEXT PRIMARY KEY, tx INTEGER NOT NULL DEFAULT 0);
+  `);
   addCol('lotti', 'motivo_richiamo_en');
   return db;
 }

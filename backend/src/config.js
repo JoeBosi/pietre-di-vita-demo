@@ -15,9 +15,23 @@ export const FASI = ['Raccolta', 'Molitura', 'Analisi', 'Imbottigliamento', 'Spe
 // Which role may register each phase.
 export const FASE_RUOLO = ['PRODUTTORE', 'FRANTOIO', 'LABORATORIO', 'IMBOTTIGLIATORE', 'PRODUTTORE'];
 
+const num = (v, d) => (v === undefined || v === '' || Number.isNaN(Number(v)) ? d : Number(v));
+
 export function loadConfig(env = process.env, overrides = {}) {
   const dataDir = overrides.dataDir ?? path.join(ROOT, 'data');
   return {
+    // Public "try the supply chain" mode. All limits come from env, defaults below.
+    demo: {
+      enabled: env.DEMO_ENABLED !== '0',
+      runsPerIpDay: num(env.DEMO_RUNS_PER_IP_DAY, 3), // complete trial paths per IP per UTC day
+      reqPerMin: num(env.DEMO_REQ_PER_MIN, 60), // /api/demo requests per IP per minute
+      txPerDay: num(env.DEMO_TX_PER_DAY, 150), // global cap of trial transactions per UTC day
+      txPerRun: 4, // a path = create lot + milling + analysis + bottling
+      minPol: num(env.DEMO_MIN_POL, 0.5), // below this balance (POL) on any actor wallet the trial pauses
+      balanceCacheSec: num(env.DEMO_BALANCE_CACHE_SEC, 60),
+      statusFile: path.join(dataDir, 'demo-status.json'),
+      ...(overrides.demo ?? {}),
+    },
     port: Number(env.PORT || 3802),
     host: '127.0.0.1',
     rpcUrl: env.RPC_URL || '',

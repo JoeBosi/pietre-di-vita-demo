@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../lib/api';
-import { Disclaimer } from '../components/Disclaimer';
+import { VerifySection } from '../components/VerifySection';
 import { OliveScene } from '../components/OliveScene';
 import { FlowDiagram } from '../components/FlowDiagram';
 import { Leaf, Check, Info, Alert } from '../components/Icons';
@@ -14,7 +14,6 @@ export default function Home() {
   return (
     <div className="space-y-10">
       <section className="rounded-2xl bg-olive-50 border border-olive-100 p-5 sm:p-8 space-y-5">
-        <p className="inline-block rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-sm font-medium px-3 py-1">{t('home.badge')}</p>
         <OliveScene />
         <h1 className="text-2xl sm:text-4xl font-bold text-olive-900 leading-tight">{t('home.title')}</h1>
         <p className="text-xl sm:text-2xl text-gray-800">{t('home.claim')}</p>
@@ -22,12 +21,12 @@ export default function Home() {
         <div className="space-y-2 pt-1">
           <Link to="/b/25B001/1" className={cta}>{t('home.cta')} <span aria-hidden="true">&rarr;</span></Link>
           <p className="text-gray-700">{t('home.ctad')}</p>
+          <Link to="/filiera#prova" className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-olive-700 bg-white text-olive-900 text-lg font-semibold px-5 min-h-14 py-3 w-full sm:w-auto text-center hover:bg-olive-100">{t('home.demo')} <span aria-hidden="true">&rarr;</span></Link>
         </div>
         <div className="rounded-xl border border-olive-100 bg-white p-4">
           <p className="text-sm font-semibold uppercase tracking-wide text-olive-800 mb-3">{t('home.flowt')}</p>
           <FlowDiagram />
         </div>
-        <p className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-base font-medium text-amber-950">{t('home.honest')}</p>
       </section>
 
       <section aria-labelledby="how">
@@ -44,6 +43,8 @@ export default function Home() {
         <p className="mt-4"><Link className="inline-flex items-center min-h-11 text-olive-800 font-medium underline" to="/come-funziona">{t('home.more')}</Link></p>
       </section>
 
+      <VerifySection />
+
       <section className="rounded-2xl border border-olive-200 bg-white p-5 flex flex-col sm:flex-row items-center gap-5">
         <Link to="/b/25B001/1" aria-label={t('home.try')} className="shrink-0">
           <img src={apiUrl('/api/qr/25B001/1.png')} alt="QR 25B001 / 1" width={160} height={160} className="bg-white rounded-lg border border-olive-100" />
@@ -54,7 +55,6 @@ export default function Home() {
           <Link to="/b/25B003/1" className="inline-flex items-center gap-2 min-h-11 rounded-lg border border-red-300 bg-red-50 text-red-800 font-medium px-4"><span className="[&>svg]:w-5 [&>svg]:h-5"><Alert /></span>{t('home.recd')}</Link>
         </div>
       </section>
-      <Disclaimer />
     </div>
   );
 }

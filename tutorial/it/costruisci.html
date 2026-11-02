@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="../en/build.html">
 </head>
 <body>
-<div class="stickybar"><div class="concept" role="note"><b>BLOCKCHAIN: CASO D'USO</b>Concept a titolo didattico. Rete di prova (Polygon Amoy), frantoio inventato, dati di esempio.</div>
+<div class="stickybar"><div class="concept" role="note"><b>BLOCKCHAIN: CASO D'USO</b>Concept a titolo didattico, rete di prova.</div>
 <div class="top"><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi</a><a class="lang" href="../en/build.html" hreflang="en" lang="en" title="English version"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#1d3b8b"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/><path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="7"/></svg><span>EN</span></a></div></div>
 <header class="h"><div class="brand">Tracciabilità dell'olio, passo passo</div></header>
 <main>
@@ -623,6 +623,7 @@ echo</code></pre>
 <p><strong>Non verificato:</strong></p>
 <ul><li>il deploy e l'uso su Polygon Amoy con un conto con fondi: è stato controllato solo che l'indirizzo RPC pubblico risponda con Chain ID 80002;</li><li>il QR inquadrato con un telefono vero (decodificato solo da programma) e la pagina aperta in un browser grafico (letta solo con <code>curl</code>);</li><li>l'uso con più conti diversi per ruolo: i test provano i ruoli, ma il server usa un solo conto;</li><li>la sicurezza del server per un uso pubblico (nessun limite di richieste, nessun HTTPS, nessun controllo del tipo di file caricato);</li><li>i documenti reali: tutti i dati sono inventati e il referto è un file di testo.</li><li>su questo computer la porta 8545 era occupata da un altro programma, quindi la prova è stata fatta con la porta 8599; con le porte libere i comandi sono quelli scritti sopra.</li></ul>
 <p>Il progetto finale funzionante è anche nella cartella <code>olio/starter</code> del repository, senza <code>node_modules</code> e senza <code>.env</code>: dopo <code>npm install</code> si può rieseguire tutto.</p>
+<p>La versione completa usata nella dimostrazione ha anche una modalità prova aperta a tutti, con limiti giornalieri: la descrive il <a href="c6.html">capitolo 6</a>.</p>
 <p>Questa è la versione base. Per una filiera vera mancano molte cose, elencate nel <a href="c9.html">capitolo 9</a>; la versione completa usata nella dimostrazione ha anche un database, l'accesso per ruolo e la gestione dei richiami.</p>
 <div class="try"><h2>Prova tu</h2><p>Cambia il numero di bottiglie, per esempio da 1 a 50, e rifai la verifica della bottiglia 51. Poi aggiungi un test che controlla che il laboratorio non possa richiamare un lotto (esiste già: trovalo e leggilo).</p></div>
 <div class="learn"><h2>Cosa hai imparato</h2><ul><li>Un lotto è un token ERC-721 e le sue fasi sono registrate con l'impronta dei documenti, non con i documenti.</li><li>I ruoli e l'ordine delle fasi sono regole del contratto, provate dai test.</li><li>Il QR contiene solo un indirizzo; verde o rosso lo decide la catena, e un richiamo vale per tutte le bottiglie del lotto.</li></ul></div>

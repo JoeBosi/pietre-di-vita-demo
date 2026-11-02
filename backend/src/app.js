@@ -10,6 +10,7 @@ import { openDb } from './db.js';
 import { createChain, httpError } from './chain.js';
 import { createService } from './service.js';
 import { createLimiter } from './ratelimit.js';
+import { createDemo } from './demo.js';
 
 export function ensureUsers(db, cfg, chain) {
   const ins = db.prepare('INSERT OR IGNORE INTO users (username,password_hash,ruolo,wallet_address,must_change_password) VALUES (?,?,?,?,1)');
@@ -18,26 +19,22 @@ export function ensureUsers(db, cfg, chain) {
   for (const a of ACTORS) upd.run(chain.addressOf(a.ruolo), a.ruolo, chain.addressOf(a.ruolo));
 }
 
-export function createApp(cfg) {
+export function createApp(cfg, deps = {}) {
   const db = openDb(cfg.dbPath);
-  const chain = createChain(cfg);
+  const chain = deps.chain ?? createChain(cfg);
   ensureUsers(db, cfg, chain);
   const svc = createService({ db, cfg, chain });
+  const demo = createDemo({ db, cfg, chain, svc });
 
   const app = express();
   app.set('trust proxy', 1);
   app.disable('x-powered-by');
   app.use(express.json({ limit: '100kb' }));
-  app.use(
-    cookieSession({
-      name: 'olio_session',
-      keys: [cfg.sessionSecret],
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: cfg.publicBaseUrl.startsWith('https://'),
-      maxAge: 8 * 3600 * 1000,
-    }),
-  );
+  const cookieBase = { httpOnly: true, sameSite: 'lax', secure: cfg.publicBaseUrl.startsWith('https://') };
+  // Real-role session and trial session are two separate cookies: the trial one never reaches the real-role routes.
+  const roleSession = cookieSession({ ...cookieBase, name: 'olio_session', keys: [cfg.sessionSecret], maxAge: 8 * 3600 * 1000 });
+  const demoSession = cookieSession({ ...cookieBase, name: 'olio_demo', keys: [`${cfg.sessionSecret}:demo`], maxAge: 24 * 3600 * 1000 });
+  app.use((req, res, next) => (req.path.startsWith('/api/demo') ? next() : roleSession(req, res, next)));
   const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 1 } });
   const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).then((r) => r !== undefined && res.json(r), next);
 
@@ -66,7 +63,22 @@ export function createApp(cfg) {
   const tooMany = (secs) =>
     Object.assign(httpError(429, 'Too many failed attempts, try again later'), { code: 'TOO_MANY_ATTEMPTS', retryAfter: secs });
 
-  app.get('/api/health', (_req, res) => res.json({ ok: true, mode: chain.enabled ? 'onchain' : 'offline', offline: !chain.enabled }));
+  app.get('/api/health', (_req, res) => {
+    const h = demo.health();
+    res.json({ ok: true, mode: chain.enabled ? 'onchain' : 'offline', offline: !chain.enabled, lowFunds: h.lowFunds, demo: h });
+  });
+
+  // Public trial mode (own cookie, own limits). Writes only on the visitor's own PROVA-* lot.
+  const dr = express.Router();
+  dr.get('/status', wrap((req) => demo.statusInfo(req)));
+  dr.get('/me', wrap((req) => demo.me(req)));
+  dr.post('/ruolo', wrap((req) => demo.chooseRole(req)));
+  dr.post('/lotto', wrap((req) => demo.creaLotto(req)));
+  dr.post('/molitura', wrap((req) => demo.mill(req)));
+  dr.post('/analisi', wrap((req) => demo.analysis(req)));
+  dr.post('/imbottiglia', wrap((req) => demo.bottle(req)));
+  dr.post('/ricomincia', wrap((req) => demo.reset(req)));
+  app.use('/api/demo', demoSession, demo.rate, dr);
 
   app.post('/api/login', wrap((req) => {
     const { username, password } = req.body ?? {};
@@ -140,5 +152,5 @@ export function createApp(cfg) {
     res.status(status).json({ ok: false, error: status >= 500 && !err.status ? 'Internal error' : message, code: err.code, ...(err.retryAfter ? { retry_after_seconds: err.retryAfter } : {}) });
   });
 
-  return { app, db, chain, svc, close: () => { limiter.stop(); db.close(); } };
+  return { app, db, chain, svc, demo, close: () => { limiter.stop(); demo.stop(); db.close(); } };
 }

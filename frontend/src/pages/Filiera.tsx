@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import DemoTry from '../components/DemoTry';
 import { useI18n, type TKey } from '../i18n';
 import { api, ApiError, postForm, postJson, type User } from '../lib/api';
 import { errorInfo } from '../lib/errors';
@@ -30,6 +31,8 @@ export default function Filiera() {
     api<{ user: User; offline: boolean }>('/api/me').then((r) => { setUser(r.user); setOffline(r.offline); }).catch(() => setUser(null));
   }, []);
   useEffect(loadMe, [loadMe]);
+  const { hash } = useLocation();
+  useEffect(() => { if (hash === '#prova' && user === null) setTimeout(() => document.getElementById('prova')?.scrollIntoView(), 50); }, [hash, user]);
 
   if (user === undefined) return <div role="status" className="space-y-4"><span className="sr-only">{t('loading')}</span><div className="skeleton h-10 w-2/3" /><div className="skeleton h-64 w-full max-w-md" /></div>;
   return (
@@ -37,6 +40,7 @@ export default function Filiera() {
       <h1 className="text-3xl font-bold text-olive-800">{t('fi.title')}</h1>
       {!user && (
         <>
+          <DemoTry />
           <p className="rounded-xl bg-olive-50 border border-olive-100 p-4 text-gray-800 space-y-2"><span className="block">{t('fi.guest')}</span><Link to="/b/25B001/1" className="inline-flex items-center min-h-11 text-olive-800 font-semibold underline">{t('fi.guestcta')}</Link></p>
           <Login onDone={loadMe} />
         </>
