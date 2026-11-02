@@ -1,5 +1,15 @@
 # Pietre di Vita (olive oil traceability demo)
 
+An educational concept: a fictional Tuscan olive mill whose bottles are traced in four signed phases and verifiable from a QR code. Polygon Amoy testnet only, no real value, all data fictional.
+
+- **Live demo:** https://tracciabilita-olio.blockchain.giuseppebosi.com
+- **Tutorial (IT/EN):** https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/
+- **Verified contracts:** see the Sourcify section at the end.
+- **Italian version:** [README.it.md](README.it.md)
+- `starter/` has a minimal, working version you can build from scratch (see the tutorial, part "Build your own").
+- **Author:** Prof. Giuseppe Bosi, https://www.giuseppebosi.com , https://www.linkedin.com/in/giuseppebosi
+- **License:** MIT (see [LICENSE](LICENSE)).
+
 A fictional Tuscan mill. Each oil lot is an ERC-721 token; every production step (harvest, milling, lab analysis, bottling) is signed on-chain by the actor who did it, with the sha256 of its proof document. Consumers scan a bottle QR code and see the chain-verified history. All data is fictional, testnet only.
 
 ## Parts
