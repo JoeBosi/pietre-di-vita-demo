@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../lib/api';
 import { Disclaimer } from '../components/Disclaimer';
+import { OliveScene } from '../components/OliveScene';
 import { FlowDiagram } from '../components/FlowDiagram';
 import { Leaf, Check, Info, Alert } from '../components/Icons';
 
@@ -14,6 +15,7 @@ export default function Home() {
     <div className="space-y-10">
       <section className="rounded-2xl bg-olive-50 border border-olive-100 p-5 sm:p-8 space-y-5">
         <p className="inline-block rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-sm font-medium px-3 py-1">{t('home.badge')}</p>
+        <OliveScene />
         <h1 className="text-2xl sm:text-4xl font-bold text-olive-900 leading-tight">{t('home.title')}</h1>
         <p className="text-xl sm:text-2xl text-gray-800">{t('home.claim')}</p>
         <p className="text-lg text-gray-800">{t('home.mission')}</p>

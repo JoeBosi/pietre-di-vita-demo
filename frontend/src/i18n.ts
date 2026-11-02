@@ -2,8 +2,9 @@ import { createContext, useContext } from 'react';
 
 const it = {
   'nav.home': 'Home', 'nav.how': 'Come funziona', 'nav.filiera': 'Area filiera', 'lang.switch': 'EN',
-  'home.title': 'Scegli il tuo olio in modo consapevole: la sua storia è certa e la verifichi tu.',
+  'home.title': 'Scegli il tuo olio extravergine di oliva in modo consapevole: la sua storia è certa e la verifichi tu.',
   'home.claim': 'Ogni bottiglia racconta la sua storia, e quella storia resta scritta.',
+  'brand': 'Frantoio Pietre di Vita', 'home.scene': 'Illustrazione: un oliveto e una bottiglia di olio extravergine di oliva.',
   'home.mission': 'Dall\'oliveto alla bottiglia, ogni passo lo registra e lo firma chi lo fa. Tu inquadri il codice QR sulla bottiglia e controlli la storia da solo.', 'home.honest': 'Dimostrazione su rete di prova, con monete di prova: il frantoio Pietre di Vita è inventato e i dati sono di esempio.',
   'home.flowt': 'Il percorso, in breve', 'home.flowaria': 'Schema: oliveto, frantoio, laboratorio, bottiglia con codice QR, tu verifichi.',
   'flow.1': 'Oliveto', 'flow.1s': 'raccolta firmata', 'flow.2': 'Frantoio', 'flow.2s': 'molitura firmata', 'flow.3': 'Laboratorio', 'flow.3s': 'analisi firmata', 'flow.4': 'Bottiglia con QR', 'flow.4s': 'imbottigliamento firmato', 'flow.5': 'Tu verifichi', 'flow.5s': 'inquadri il QR e controlli',
@@ -63,7 +64,7 @@ const it = {
   'err.recalled': 'Questo lotto è stato richiamato: non si può aggiungere altro.', 'err.login': 'Utente o password non corretti.', 'err.session': 'Sessione scaduta: accedi di nuovo.', 'err.net': 'Non riesco a raggiungere il server. Riprova.',
   'err.dup': 'Esiste già un lotto con questo codice.', 'err.must': 'Prima devi cambiare la password.', 'err.wrongpw': 'La password attuale non è corretta.', 'err.generic': 'Qualcosa è andato storto', 'err.many': 'Troppi tentativi: riprova tra un minuto.', 'err.toomany': 'Troppi tentativi sbagliati. Per sicurezza l\'accesso è bloccato: riprova tra {minutes} min.',
   'offline.note': 'Server in modalità prova: i passi non vengono scritti sul registro pubblico.',
-  'concept.short': 'Concept didattico, rete di prova', 'concept.tag': 'Concept', 'concept.banner': 'Concept a titolo didattico. Rete di prova (Polygon Amoy), frantoio inventato, dati di esempio.',
+  'concept.short': 'Concept didattico, rete di prova', 'concept.tag': 'BLOCKCHAIN: CASO D\'USO', 'concept.banner': 'Concept a titolo didattico. Rete di prova (Polygon Amoy), frantoio inventato, dati di esempio.',
   'foot.sig': 'Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Carico...',
   'home.cta': 'Prova con una bottiglia di esempio', 'home.ctad': 'Un clic e vedi la storia completa di una bottiglia, come la vedrebbe un cliente.', 'home.badge': 'Dimostrazione: frantoio inventato, dati di prova',
@@ -76,8 +77,9 @@ const it = {
 type Key = keyof typeof it;
 const en: Record<Key, string> = {
   'nav.home': 'Home', 'nav.how': 'How it works', 'nav.filiera': 'Supply chain area', 'lang.switch': 'IT',
-  'home.title': 'Choose your oil with confidence: its story is certain and you check it yourself.',
+  'home.title': 'Choose your extra virgin olive oil with confidence: its story is certain and you check it yourself.',
   'home.claim': 'Every bottle tells its story, and that story stays on record.',
+  'brand': 'Pietre di Vita Olive Mill', 'home.scene': 'Illustration: an olive grove and a bottle of extra virgin olive oil.',
   'home.mission': 'From the grove to the bottle, every step is recorded and signed by whoever does it. You scan the QR code on the bottle and check the story yourself.', 'home.honest': 'Demonstration on a test network, with test coins: the Pietre di Vita mill is fictional and the data are samples.',
   'home.flowt': 'The journey, in short', 'home.flowaria': 'Diagram: grove, mill, lab, bottle with QR code, you verify.',
   'flow.1': 'Olive grove', 'flow.1s': 'signed harvest', 'flow.2': 'Mill', 'flow.2s': 'signed milling', 'flow.3': 'Lab', 'flow.3s': 'signed analysis', 'flow.4': 'Bottle with QR', 'flow.4s': 'signed bottling', 'flow.5': 'You verify', 'flow.5s': 'scan the QR and check',
@@ -137,7 +139,7 @@ const en: Record<Key, string> = {
   'err.recalled': 'This lot was recalled: nothing more can be added.', 'err.login': 'Wrong user or password.', 'err.session': 'Session expired: please sign in again.', 'err.net': 'Cannot reach the server. Try again.',
   'err.dup': 'A lot with this code already exists.', 'err.must': 'You must change your password first.', 'err.wrongpw': 'The current password is wrong.', 'err.generic': 'Something went wrong', 'err.many': 'Too many attempts: try again in a minute.', 'err.toomany': 'Too many wrong attempts. For safety, sign-in is blocked: try again in {minutes} min.',
   'offline.note': 'Server in test mode: steps are not written on the public record.',
-  'concept.short': 'Educational concept, test network', 'concept.tag': 'Concept', 'concept.banner': 'Educational concept. Test network (Polygon Amoy), invented mill, sample data.',
+  'concept.short': 'Educational concept, test network', 'concept.tag': 'BLOCKCHAIN: USE CASE', 'concept.banner': 'Educational concept. Test network (Polygon Amoy), invented mill, sample data.',
   'foot.sig': 'Prof. Giuseppe Bosi, Computer Science and Technology', 'foot.site': 'www.giuseppebosi.com',
   'loading': 'Loading...',
   'home.cta': 'Try it with a sample bottle', 'home.ctad': 'One click and you see the full story of a bottle, as a customer would see it.', 'home.badge': 'Demonstration: fictional mill, test data',
