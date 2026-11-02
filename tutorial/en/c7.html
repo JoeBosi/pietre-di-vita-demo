@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="style.css">
 <!-- seo:start -->
 <title>Off-Chain Documents and Hashes | Tutorial</title>
-<meta name="description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an olive oil laboratory report.">
+<meta name="description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an extra virgin olive oil laboratory report.">
 <link rel="canonical" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html">
 <link rel="alternate" hreflang="it" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c7.html">
 <link rel="alternate" hreflang="en" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pietre di Vita Olive Mill">
 <meta property="og:title" content="Off-Chain Documents and Hashes | Tutorial">
-<meta property="og:description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an olive oil laboratory report.">
+<meta property="og:description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an extra virgin olive oil laboratory report.">
 <meta property="og:url" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html">
 <meta property="og:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -25,10 +25,10 @@
 <meta property="og:locale:alternate" content="it_IT">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Off-Chain Documents and Hashes | Tutorial">
-<meta name="twitter:description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an olive oil laboratory report.">
+<meta name="twitter:description" content="Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an extra virgin olive oil laboratory report.">
 <meta name="twitter:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
 <meta name="twitter:image:alt" content="Extra virgin olive oil bottle with a QR code: Pietre di Vita Olive Mill">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "7. Documents outside the chain", "description": "Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an olive oil laboratory report.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html", "inLanguage": "en", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: the story of an olive oil bottle", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "7. Documents outside the chain", "description": "Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an extra virgin olive oil laboratory report.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html", "inLanguage": "en", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c7.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: the story of an extra virgin olive oil bottle", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/"}}</script>
 <!-- seo:end -->
 </head>
 <body>
@@ -70,7 +70,7 @@ Analisi           25B001-report.pdf       True    True
 Imbottigliamento  25B001-label.png        True    True
 
 original intact? True
-modified intact? False</code></pre></div>
+modified intact? False</code></pre><img src="../img/colab-output.jpg" alt="Section 6 of the notebook in Colab: four documents with True in the API and chain columns." width="1200" height="750" loading="lazy"></div>
 <div class="try"><h2>Try it yourself</h2><p>Change the content of <code>report.txt</code> (for example acidity 0.9), compute its fingerprint with the script above, then change one letter in the file and recompute. Compare the two fingerprints with the documentIsIntact function.</p></div><div class="learn"><h2>What you learned</h2><ul><li>Only the 32-byte fingerprint is written on the chain, not the file.</li><li>The file lives on the backend and anyone can recompute its fingerprint.</li><li>The fingerprint proves the file is unchanged, not that it is true.</li></ul></div><nav class="pn"><a href="c6.html">&larr; Who can do what</a><a href="index.html">Contents</a><a href="c8.html">The QR code and the public page &rarr;</a></nav>
 </main>
 <footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Computer Science and Technology</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Giuseppe Bosi's website</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Code on GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="style.css">
 <!-- seo:start -->
-<title>Coding: costruisci la tracciabilità dell&#x27;olio | Tutorial</title>
+<title>Coding: tracciabilità olio extravergine di oliva | Tutorial</title>
 <meta name="description" content="Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso.">
 <link rel="canonical" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html">
 <link rel="alternate" hreflang="it" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html">
@@ -13,7 +13,7 @@
 <link rel="alternate" hreflang="x-default" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Frantoio Pietre di Vita">
-<meta property="og:title" content="Coding: costruisci la tracciabilità dell&#x27;olio | Tutorial">
+<meta property="og:title" content="Coding: tracciabilità olio extravergine di oliva | Tutorial">
 <meta property="og:description" content="Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso.">
 <meta property="og:url" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html">
 <meta property="og:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
@@ -24,11 +24,11 @@
 <meta property="og:locale" content="it_IT">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Coding: costruisci la tracciabilità dell&#x27;olio | Tutorial">
+<meta name="twitter:title" content="Coding: tracciabilità olio extravergine di oliva | Tutorial">
 <meta name="twitter:description" content="Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso.">
 <meta name="twitter:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
 <meta name="twitter:image:alt" content="Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Costruisci la tua versione base di Pietre di Vita", "description": "Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html", "inLanguage": "it", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: la storia di una bottiglia d'olio", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Costruisci la tua versione base di Pietre di Vita", "description": "Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html", "inLanguage": "it", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: la storia di una bottiglia d'olio extravergine di oliva", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/"}}</script>
 <!-- seo:end -->
 </head>
 <body>
@@ -254,8 +254,8 @@ contract MiniOlio is ERC721, AccessControl {
 <p>Compila:</p>
 <pre data-cmd="compile" data-mode="fg"><code>npx hardhat compile</code></pre>
 <pre class="out" data-out="compile"><code>Compiled 18 Solidity files successfully (evm target: cancun).</code></pre>
-<div class="tryit"><h2>Provalo subito</h2><p>Compila e prova il contratto di questo passo direttamente dal browser: si apre nell'editor online Remix, pronto da compilare. Hardhat, i test e il server dei passi successivi girano sul tuo computer con i comandi di questa pagina.</p><div class="btns"><a class="btn" href="https://remix.ethereum.org/#url=https://github.com/JoeBosi/pietre-di-vita-demo/blob/main/starter/contracts/MiniOlio.sol&amp;lang=it&amp;optimize=true&amp;runs=200&amp;evmVersion=null&amp;version=soljson-v0.8.24+commit.e11b9ed9.js" target="_blank" rel="noopener">Apri il contratto in Remix</a></div><p>Gratuito, funziona nel browser, solo dati pubblici.</p></div>
-<div class="see"><h2>Cosa dovresti vedere</h2><p>In Remix: scheda <em>Solidity compiler</em>, compilatore 0.8.24, pulsante <em>Compile</em>: compare la spunta verde. Con Hardhat sul tuo computer l'esito è quello mostrato qui sopra.</p></div>
+<div class="tryit"><h2>Provalo subito</h2><p>Compila e prova il contratto di questo passo direttamente dal browser: si apre nell'editor online Remix, pronto da compilare. Hardhat, i test e il server dei passi successivi girano sul tuo computer con i comandi di questa pagina.</p><div class="btns"><a class="btn" href="https://remix.ethereum.org/#url=https://github.com/JoeBosi/pietre-di-vita-demo/blob/main/starter/contracts/MiniOlio.sol&amp;lang=it&amp;optimize=true&amp;runs=200&amp;evmVersion=cancun&amp;version=soljson-v0.8.24+commit.e11b9ed9.js" target="_blank" rel="noopener">Apri il contratto in Remix</a></div><p>Gratuito, funziona nel browser, solo dati pubblici.</p><p>Remix è in inglese. Se mentre la pagina si apre il terminale mostra un messaggio rosso &quot;Could not resolve package version&quot;, premi ancora <em>Compile</em>: la libreria OpenZeppelin viene scaricata e compare la spunta verde.</p></div>
+<div class="see"><h2>Cosa dovresti vedere</h2><p>In Remix: scheda <em>Solidity compiler</em>, compilatore 0.8.24, pulsante <em>Compile</em>: compare la spunta verde. Con Hardhat sul tuo computer l'esito è quello mostrato qui sopra.</p><img src="../img/remix-miniolio-compiled.jpg" alt="Remix con MiniOlio.sol compilato: compilatore 0.8.24 e spunta verde." width="1200" height="577" loading="lazy"></div>
 <h2>3. I test</h2>
 <p>Un test è un piccolo programma che prova il contratto e dice se si comporta come previsto. Questi lo provano su una catena finta che vive solo in memoria:</p>
 <p><code>test/MiniOlio.test.js</code></p><pre data-file="test/MiniOlio.test.js"><code>const { expect } = require(&quot;chai&quot;);
@@ -651,7 +651,7 @@ Molitura          25B001-mill.png         True    True
 Analisi           25B001-report.pdf       True    True
 Imbottigliamento  25B001-label.png        True    True
 
-GREEN: bottle 12 of lot 25B001 is valid (token 5)</code></pre></div>
+GREEN: bottle 12 of lot 25B001 is valid (token 5)</code></pre><img src="../img/bottle-page-it.jpg" alt="Pagina pubblica della bottiglia 12 di 360 del lotto 25B001, con il riquadro verde Verificata." width="1000" height="900" loading="lazy"><img src="../img/stackblitz-check.jpg" alt="StackBlitz: a sinistra il codice, a destra la pagina che mostra GREEN per il lotto 25B001, bottiglia 12." width="1200" height="750" loading="lazy"></div>
 <h2>7. Cosa abbiamo verificato davvero / cosa no</h2>
 <p><strong>Verificato, eseguendo tutto da una cartella vuota con Node 22 su un server Linux:</strong></p>
 <ul><li>l'installazione delle librerie con i comandi di questa pagina, ripetuta il 2 novembre 2026 in una cartella nuova e vuota (Node 22.23.1, Hardhat 2.29.1, OpenZeppelin 5.6.1);</li><li>la compilazione e gli 11 test del contratto, tutti passati;</li><li>il deploy su una rete locale Hardhat, il server avviato e le chiamate dei passi 5 e 6 con gli output mostrati qui;</li><li>il QR generato come PNG da 300x300 e decodificato con un lettore di QR: contiene l'indirizzo atteso;</li><li>bottiglia valida (verde), bottiglia fuori intervallo, lotto sconosciuto e lotto richiamato (rosso), ordine delle fasi, ruoli e codice segreto errato;</li><li>il codice di questa pagina è estratto automaticamente dai blocchi che vedi e rieseguito: non c'è copia a mano.</li></ul>
