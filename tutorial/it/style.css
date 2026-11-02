@@ -38,3 +38,5 @@ footer{border-top:1px solid #dfe6d2;background:#f4f7ee;padding:14px 16px;font-si
 pre.out{background:#f1f6ec;border-color:#d6e2c6}
 
 .concept{background:#0f172a;color:#fff;text-align:center;font-weight:600;font-size:14px;line-height:1.4;padding:8px 12px}.concept b{background:#fbbf24;color:#0f172a;border-radius:4px;padding:1px 7px;margin-right:8px;font-size:12px;text-transform:uppercase}
+
+.stickybar{position:sticky;top:0;z-index:50;background:#fff}.concept{font-size:12px!important;padding:5px 10px!important}@media(min-width:700px){.concept{font-size:14px!important;padding:8px 12px!important}}html{scroll-padding-top:7rem}

@@ -8,7 +8,7 @@
   --color-olive-800: #3b4f1b;
   --color-olive-900: #2a3913;
 }
-html { font-size: 17px; scroll-behavior: smooth; }
+html { font-size: 17px; scroll-behavior: smooth; scroll-padding-top: 10rem; }
 body { background: #faf9f3; color: #1f2417; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; }
 a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #5f7a2a; outline-offset: 2px; }
 @keyframes pulse-soft { 50% { opacity: .45; } }

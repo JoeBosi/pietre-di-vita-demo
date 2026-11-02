@@ -25,9 +25,9 @@ export function Layout() {
     `flex-1 min-w-0 sm:flex-none text-center px-2 sm:px-3 py-2 min-h-11 flex items-center justify-center rounded-lg leading-tight text-[0.95rem] sm:text-base transition-colors ${isActive ? 'font-semibold text-white bg-olive-700' : 'text-olive-900 hover:bg-olive-100'}`;
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="bg-slate-900 px-4 py-2 text-center text-sm font-semibold leading-snug text-white" role="note"><span className="mr-2 rounded bg-amber-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-slate-900">{t('concept.tag')}</span>{t('concept.banner')}</div>
-      <header className="border-b border-olive-100 bg-white sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="sticky top-0 z-40"><div className="bg-slate-900 px-3 py-1 text-center text-xs sm:text-sm sm:px-4 sm:py-2 font-semibold leading-snug text-white" role="note"><span className="mr-2 rounded bg-amber-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-slate-900">{t('concept.tag')}</span><span className="sm:hidden">{t('concept.short')}</span><span className="hidden sm:inline">{t('concept.banner')}</span></div>
+      <header className="border-b border-olive-100 bg-white">
+        <div className="max-w-3xl mx-auto px-4 py-1.5 sm:py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-y-2">
           <Link to="/" className="flex items-center gap-2 font-bold text-olive-800 text-xl mr-auto min-h-11">{logo}<span>Pietre di Vita</span></Link>
           <button type="button" aria-label={t('lang.aria')} onClick={() => setLang(lang === 'it' ? 'en' : 'it')} className="order-2 sm:order-3 inline-flex items-center gap-2 border border-gray-300 rounded-lg px-3 min-h-11 text-base font-medium bg-white">
             {lang === 'it' ? flagUK : flagIT}<span>{t('lang.switch')}</span>
@@ -38,7 +38,7 @@ export function Layout() {
             <NavLink to="/filiera" className={link}>{t('nav.filiera')}</NavLink>
           </nav>
         </div>
-      </header>
+      </header></div>
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-6 sm:py-10"><Outlet /></main>
       <footer className="border-t border-olive-100 bg-white text-sm text-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
