@@ -44,6 +44,7 @@
 <pre data-cmd="node" data-mode="fg"><code>node -v</code></pre>
 <pre class="out" data-out="node"><code>v22.23.1</code></pre>
 <p>You will use three terminal windows: one for the local test network, one for the server, one for commands. New words: <strong>Hardhat</strong> is the environment that compiles and tests contracts; <strong>OpenZeppelin</strong> is a collection of ready-made, audited contracts; <strong>ERC-721</strong> is the standard for unique tokens; <strong>SHA-256</strong> is the function that computes a file's fingerprint; <strong>RPC</strong> (Remote Procedure Call) is the address a program uses to talk to the chain; <strong>QR</strong> (Quick Response) code is the square pattern you scan with a phone.</p>
+<div class="box"><h2>Your operating system</h2><p>The commands use a Unix-style terminal: Linux and macOS have it ready, on Windows use <strong>WSL</strong> (Ubuntu) or <strong>Git Bash</strong>. On macOS replace <code>sha256sum file</code> with <code>shasum -a 256 file</code>. The commands that talk to the chain need an internet connection.</p></div>
 <h2>1. The folder and the libraries</h2>
 <p>Create the folder and initialise the Node project:</p>
 <pre data-cmd="setup" data-mode="fg"><code>mkdir pietre-base
@@ -63,10 +64,10 @@ npm init -y</code></pre>
   &quot;author&quot;: &quot;&quot;,
   &quot;license&quot;: &quot;ISC&quot;
 }</code></pre>
-<p>Install Hardhat 2 with its toolbox, then OpenZeppelin 5 and the server libraries (<code>express</code> for the web server, <code>qrcode</code> for the QR code, <code>dotenv</code> to read the <code>.env</code> file):</p>
+<p>Install Hardhat 2 with its toolbox, then OpenZeppelin 5 and the server libraries (<code>express</code> for the web server, <code>qrcode</code> for the QR code, <code>dotenv</code> to read the <code>.env</code> file, <code>ethers</code> to talk to the chain):</p>
 <pre data-cmd="inst1" data-mode="fg"><code>npm install --save-dev hardhat@2 @nomicfoundation/hardhat-toolbox@5</code></pre>
-<pre data-cmd="inst2" data-mode="fg"><code>npm install @openzeppelin/contracts@5 express@4 qrcode dotenv</code></pre>
-<p>The command may print security warnings about Hardhat's dependencies: they do not block anything. Now a <code>.gitignore</code> file (so secret or heavy files never end up in a git archive) and the subfolders:</p>
+<pre data-cmd="inst2" data-mode="fg"><code>npm install @openzeppelin/contracts@5 express@4 qrcode dotenv ethers@6</code></pre>
+<p>The command may print security warnings about Hardhat's dependencies: they are normal for this teaching setup and the installation goes on to the end. Now a <code>.gitignore</code> file (so secret or heavy files never end up in a git archive) and the subfolders:</p>
 <pre data-cmd="ign" data-mode="fg"><code>printf &#x27;node_modules\n.env\ncache\nartifacts\n&#x27; &gt; .gitignore
 mkdir contracts test scripts server</code></pre>
 <p>Create the Hardhat configuration file. The Amoy network is added only if you fill in the <code>.env</code> file:</p>
@@ -253,6 +254,8 @@ contract MiniOlio is ERC721, AccessControl {
 <p>Compile:</p>
 <pre data-cmd="compile" data-mode="fg"><code>npx hardhat compile</code></pre>
 <pre class="out" data-out="compile"><code>Compiled 18 Solidity files successfully (evm target: cancun).</code></pre>
+<div class="tryit"><h2>Try it now</h2><p>Compile and try the contract of this step straight from your browser: it opens in the Remix online editor, ready to compile. Hardhat, the tests and the server of the next steps run on your computer with the commands on this page.</p><div class="btns"><a class="btn" href="https://remix.ethereum.org/#url=https://github.com/JoeBosi/pietre-di-vita-demo/blob/main/starter/contracts/MiniOlio.sol&amp;lang=en&amp;optimize=true&amp;runs=200&amp;evmVersion=null&amp;version=soljson-v0.8.24+commit.e11b9ed9.js" target="_blank" rel="noopener">Open the contract in Remix</a></div><p>Free, runs in your browser, public data only.</p></div>
+<div class="see"><h2>What you should see</h2><p>In Remix: <em>Solidity compiler</em> tab, compiler 0.8.24, <em>Compile</em> button: a green tick appears. With Hardhat on your computer the output is the one shown above.</p></div>
 <h2>3. The tests</h2>
 <p>A test is a small program that tries the contract and says whether it behaves as expected. These run on a fake chain living only in memory:</p>
 <p><code>test/MiniOlio.test.js</code></p><pre data-file="test/MiniOlio.test.js"><code>const { expect } = require(&quot;chai&quot;);
@@ -641,9 +644,17 @@ class=&quot;v red&quot;&gt;RED: Recalled lot: do not use</code></pre>
 <pre data-cmd="t10" data-mode="fg"><code>curl -s -X POST localhost:3900/api/hash -H &quot;x-api-token: wrong&quot; -d x
 echo</code></pre>
 <pre class="out" data-out="t10"><code>{&quot;error&quot;:&quot;bad token&quot;}</code></pre>
+<div class="tryit"><h2>Try it now</h2><p>Check a real bottle straight from your browser: the public page, the site's JSON answer, the Python notebook that compares the fingerprints on the chain, and the small check page in StackBlitz.</p><div class="btns"><a class="btn" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/en/b/25B001/12" target="_blank" rel="noopener">Open bottle 12 of lot 25B001</a><a class="btn" href="https://colab.research.google.com/github/JoeBosi/pietre-di-vita-demo/blob/main/notebooks/pietre_di_vita_verify_en.ipynb" target="_blank" rel="noopener">Open the notebook in Colab</a><a class="btn alt" href="https://stackblitz.com/github/JoeBosi/pietre-di-vita-demo/tree/main/starter/web" target="_blank" rel="noopener">Open the check page in StackBlitz</a><a class="btn alt" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/api/pubblico/bottiglia/25B001/12" target="_blank" rel="noopener">The site's JSON answer</a></div><p>Free, runs in your browser, public data only. Colab asks for a free Google account to run the cells (menu <em>Runtime &gt; Run all</em>).</p></div>
+<div class="see"><h2>What you should see</h2><p>Bottle 12 of lot 25B001 is green on the page. The notebook ends with four documents matching the chain, and the check page shows:</p><pre class="out"><code>phase             file                    = API   = chain
+Raccolta          25B001-harvest.png      True    True
+Molitura          25B001-mill.png         True    True
+Analisi           25B001-report.pdf       True    True
+Imbottigliamento  25B001-label.png        True    True
+
+GREEN: bottle 12 of lot 25B001 is valid (token 5)</code></pre></div>
 <h2>7. What we really verified / what we did not</h2>
 <p><strong>Verified, running everything from an empty folder with Node 22 on a Linux server:</strong></p>
-<ul><li>installing the libraries with the commands on this page;</li><li>compiling and the contract's 11 tests, all passing;</li><li>the deploy on a local Hardhat network, the running server and the calls of steps 5 and 6 with the outputs shown here;</li><li>the QR code generated as a 300x300 PNG and decoded with a QR reader: it contains the expected address;</li><li>valid bottle (green), bottle out of range, unknown lot and recalled lot (red), phase order, roles and wrong secret code;</li><li>the code on this page is extracted automatically from the blocks you see and re-run: no hand copying.</li></ul>
+<ul><li>installing the libraries with the commands on this page, repeated on 2 November 2026 in a new empty folder (Node 22.23.1, Hardhat 2.29.1, OpenZeppelin 5.6.1);</li><li>compiling and the contract's 11 tests, all passing;</li><li>the deploy on a local Hardhat network, the running server and the calls of steps 5 and 6 with the outputs shown here;</li><li>the QR code generated as a 300x300 PNG and decoded with a QR reader: it contains the expected address;</li><li>valid bottle (green), bottle out of range, unknown lot and recalled lot (red), phase order, roles and wrong secret code;</li><li>the code on this page is extracted automatically from the blocks you see and re-run: no hand copying.</li></ul>
 <p><strong>Not verified:</strong></p>
 <ul><li>deploying and using it on Polygon Amoy with a funded account: only checked that the public RPC address answers with Chain ID 80002;</li><li>the QR scanned with a real phone (decoded only by software) and the page opened in a graphical browser (read only with <code>curl</code>);</li><li>use with different accounts per role: the tests cover roles, but the server uses a single account;</li><li>the server's security for public use (no rate limits, no HTTPS, no check on uploaded file type);</li><li>real documents: all data is made up and the report is a text file.</li><li>on this computer port 8545 was taken by another program, so the run used port 8599; with free ports the commands are as written above.</li></ul>
 <p>The final working project is also in the repository's <code>olio/starter</code> folder, without <code>node_modules</code> and without <code>.env</code>: after <code>npm install</code> you can run everything again.</p>

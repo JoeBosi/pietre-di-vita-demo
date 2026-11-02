@@ -44,6 +44,7 @@
 <pre data-cmd="node" data-mode="fg"><code>node -v</code></pre>
 <pre class="out" data-out="node"><code>v22.23.1</code></pre>
 <p>Ti serviranno tre finestre di terminale: una per la rete di prova locale, una per il server, una per i comandi. Le parole nuove: <strong>Hardhat</strong> è l'ambiente che compila e prova i contratti; <strong>OpenZeppelin</strong> è una raccolta di contratti già scritti e controllati; <strong>ERC-721</strong> è lo standard dei token unici; <strong>SHA-256</strong> è la funzione che calcola l'impronta di un file; <strong>RPC</strong> (Remote Procedure Call, chiamata a procedura remota) è l'indirizzo con cui un programma parla con la catena; <strong>QR</strong> è il codice a quadretti che si inquadra col telefono.</p>
+<div class="box"><h2>Il tuo sistema operativo</h2><p>I comandi usano un terminale in stile Unix: Linux e macOS lo hanno già, su Windows usa <strong>WSL</strong> (Ubuntu) oppure <strong>Git Bash</strong>. Su macOS al posto di <code>sha256sum file</code> scrivi <code>shasum -a 256 file</code>. I comandi che parlano con la catena richiedono la connessione a internet.</p></div>
 <h2>1. La cartella e le librerie</h2>
 <p>Crea la cartella e inizializza il progetto Node:</p>
 <pre data-cmd="setup" data-mode="fg"><code>mkdir pietre-base
@@ -63,10 +64,10 @@ npm init -y</code></pre>
   &quot;author&quot;: &quot;&quot;,
   &quot;license&quot;: &quot;ISC&quot;
 }</code></pre>
-<p>Installa Hardhat 2 con il suo pacchetto di strumenti, poi OpenZeppelin 5 e le librerie del server (<code>express</code> per il server web, <code>qrcode</code> per il QR, <code>dotenv</code> per leggere il file <code>.env</code>):</p>
+<p>Installa Hardhat 2 con il suo pacchetto di strumenti, poi OpenZeppelin 5 e le librerie del server (<code>express</code> per il server web, <code>qrcode</code> per il QR, <code>dotenv</code> per leggere il file <code>.env</code>, <code>ethers</code> per parlare con la catena):</p>
 <pre data-cmd="inst1" data-mode="fg"><code>npm install --save-dev hardhat@2 @nomicfoundation/hardhat-toolbox@5</code></pre>
-<pre data-cmd="inst2" data-mode="fg"><code>npm install @openzeppelin/contracts@5 express@4 qrcode dotenv</code></pre>
-<p>Il comando può stampare avvisi di sicurezza sulle dipendenze di Hardhat: non bloccano nulla. Ora un file <code>.gitignore</code> (così non finiscono mai in un archivio git i file segreti o pesanti) e le sottocartelle:</p>
+<pre data-cmd="inst2" data-mode="fg"><code>npm install @openzeppelin/contracts@5 express@4 qrcode dotenv ethers@6</code></pre>
+<p>Il comando può stampare avvisi di sicurezza sulle dipendenze di Hardhat: sono normali in questo ambiente didattico e l'installazione prosegue fino in fondo. Ora un file <code>.gitignore</code> (così non finiscono mai in un archivio git i file segreti o pesanti) e le sottocartelle:</p>
 <pre data-cmd="ign" data-mode="fg"><code>printf &#x27;node_modules\n.env\ncache\nartifacts\n&#x27; &gt; .gitignore
 mkdir contracts test scripts server</code></pre>
 <p>Crea il file di configurazione di Hardhat. La rete Amoy viene aggiunta solo se compili il file <code>.env</code>:</p>
@@ -253,6 +254,8 @@ contract MiniOlio is ERC721, AccessControl {
 <p>Compila:</p>
 <pre data-cmd="compile" data-mode="fg"><code>npx hardhat compile</code></pre>
 <pre class="out" data-out="compile"><code>Compiled 18 Solidity files successfully (evm target: cancun).</code></pre>
+<div class="tryit"><h2>Provalo subito</h2><p>Compila e prova il contratto di questo passo direttamente dal browser: si apre nell'editor online Remix, pronto da compilare. Hardhat, i test e il server dei passi successivi girano sul tuo computer con i comandi di questa pagina.</p><div class="btns"><a class="btn" href="https://remix.ethereum.org/#url=https://github.com/JoeBosi/pietre-di-vita-demo/blob/main/starter/contracts/MiniOlio.sol&amp;lang=it&amp;optimize=true&amp;runs=200&amp;evmVersion=null&amp;version=soljson-v0.8.24+commit.e11b9ed9.js" target="_blank" rel="noopener">Apri il contratto in Remix</a></div><p>Gratuito, funziona nel browser, solo dati pubblici.</p></div>
+<div class="see"><h2>Cosa dovresti vedere</h2><p>In Remix: scheda <em>Solidity compiler</em>, compilatore 0.8.24, pulsante <em>Compile</em>: compare la spunta verde. Con Hardhat sul tuo computer l'esito è quello mostrato qui sopra.</p></div>
 <h2>3. I test</h2>
 <p>Un test è un piccolo programma che prova il contratto e dice se si comporta come previsto. Questi lo provano su una catena finta che vive solo in memoria:</p>
 <p><code>test/MiniOlio.test.js</code></p><pre data-file="test/MiniOlio.test.js"><code>const { expect } = require(&quot;chai&quot;);
@@ -641,9 +644,17 @@ class=&quot;v red&quot;&gt;RED: Recalled lot: do not use</code></pre>
 <pre data-cmd="t10" data-mode="fg"><code>curl -s -X POST localhost:3900/api/hash -H &quot;x-api-token: wrong&quot; -d x
 echo</code></pre>
 <pre class="out" data-out="t10"><code>{&quot;error&quot;:&quot;bad token&quot;}</code></pre>
+<div class="tryit"><h2>Provalo subito</h2><p>Controlla una bottiglia vera direttamente dal browser: la pagina pubblica, la risposta JSON del sito, il notebook Python che confronta le impronte sulla catena e la piccola pagina di verifica in StackBlitz.</p><div class="btns"><a class="btn" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/b/25B001/12" target="_blank" rel="noopener">Apri la bottiglia 12 del lotto 25B001</a><a class="btn" href="https://colab.research.google.com/github/JoeBosi/pietre-di-vita-demo/blob/main/notebooks/pietre_di_vita_verifica_it.ipynb" target="_blank" rel="noopener">Apri il notebook in Colab</a><a class="btn alt" href="https://stackblitz.com/github/JoeBosi/pietre-di-vita-demo/tree/main/starter/web" target="_blank" rel="noopener">Apri la pagina di verifica in StackBlitz</a><a class="btn alt" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/api/pubblico/bottiglia/25B001/12" target="_blank" rel="noopener">Risposta JSON del sito</a></div><p>Gratuito, funziona nel browser, solo dati pubblici. Colab chiede un account Google gratuito per eseguire le celle (menu <em>Runtime &gt; Esegui tutto</em>).</p></div>
+<div class="see"><h2>Cosa dovresti vedere</h2><p>La bottiglia 12 del lotto 25B001 è verde sulla pagina. Il notebook finisce con quattro documenti che coincidono con la catena, e la pagina di verifica mostra:</p><pre class="out"><code>phase             file                    = API   = chain
+Raccolta          25B001-harvest.png      True    True
+Molitura          25B001-mill.png         True    True
+Analisi           25B001-report.pdf       True    True
+Imbottigliamento  25B001-label.png        True    True
+
+GREEN: bottle 12 of lot 25B001 is valid (token 5)</code></pre></div>
 <h2>7. Cosa abbiamo verificato davvero / cosa no</h2>
 <p><strong>Verificato, eseguendo tutto da una cartella vuota con Node 22 su un server Linux:</strong></p>
-<ul><li>l'installazione delle librerie con i comandi di questa pagina;</li><li>la compilazione e gli 11 test del contratto, tutti passati;</li><li>il deploy su una rete locale Hardhat, il server avviato e le chiamate dei passi 5 e 6 con gli output mostrati qui;</li><li>il QR generato come PNG da 300x300 e decodificato con un lettore di QR: contiene l'indirizzo atteso;</li><li>bottiglia valida (verde), bottiglia fuori intervallo, lotto sconosciuto e lotto richiamato (rosso), ordine delle fasi, ruoli e codice segreto errato;</li><li>il codice di questa pagina è estratto automaticamente dai blocchi che vedi e rieseguito: non c'è copia a mano.</li></ul>
+<ul><li>l'installazione delle librerie con i comandi di questa pagina, ripetuta il 2 novembre 2026 in una cartella nuova e vuota (Node 22.23.1, Hardhat 2.29.1, OpenZeppelin 5.6.1);</li><li>la compilazione e gli 11 test del contratto, tutti passati;</li><li>il deploy su una rete locale Hardhat, il server avviato e le chiamate dei passi 5 e 6 con gli output mostrati qui;</li><li>il QR generato come PNG da 300x300 e decodificato con un lettore di QR: contiene l'indirizzo atteso;</li><li>bottiglia valida (verde), bottiglia fuori intervallo, lotto sconosciuto e lotto richiamato (rosso), ordine delle fasi, ruoli e codice segreto errato;</li><li>il codice di questa pagina è estratto automaticamente dai blocchi che vedi e rieseguito: non c'è copia a mano.</li></ul>
 <p><strong>Non verificato:</strong></p>
 <ul><li>il deploy e l'uso su Polygon Amoy con un conto con fondi: è stato controllato solo che l'indirizzo RPC pubblico risponda con Chain ID 80002;</li><li>il QR inquadrato con un telefono vero (decodificato solo da programma) e la pagina aperta in un browser grafico (letta solo con <code>curl</code>);</li><li>l'uso con più conti diversi per ruolo: i test provano i ruoli, ma il server usa un solo conto;</li><li>la sicurezza del server per un uso pubblico (nessun limite di richieste, nessun HTTPS, nessun controllo del tipo di file caricato);</li><li>i documenti reali: tutti i dati sono inventati e il referto è un file di testo.</li><li>su questo computer la porta 8545 era occupata da un altro programma, quindi la prova è stata fatta con la porta 8599; con le porte libere i comandi sono quelli scritti sopra.</li></ul>
 <p>Il progetto finale funzionante è anche nella cartella <code>olio/starter</code> del repository, senza <code>node_modules</code> e senza <code>.env</code>: dopo <code>npm install</code> si può rieseguire tutto.</p>

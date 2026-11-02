@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pietre di Vita - check a bottle (teaching demo)</title>
+  <style>
+    body { font: 18px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 0 auto; padding: 16px; background: #fff; color: #222; }
+    input, button { font: inherit; padding: 8px 12px; margin: 4px 4px 4px 0; }
+    button { background: #2f7d32; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+    .v { padding: 16px; border-radius: 8px; color: #fff; font-weight: 700; margin-top: 16px; }
+    .green { background: #2f7d32; } .red { background: #b3261e; } .grey { background: #666; }
+    small { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Check a bottle</h1>
+  <p>Reads the Pietre di Vita contract on Polygon Amoy (test network). No wallet needed.</p>
+  <label>Lot code <input id="lot" value="25B001"></label>
+  <label>Bottle number <input id="n" type="number" min="0" value="12"></label>
+  <button id="go">Check</button>
+  <div id="result" class="v grey">Press "Check".</div>
+  <p><small>Invented olive mill, fake data, test network. Contract:
+    <a id="contract-link" target="_blank" rel="noopener"></a></small></p>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

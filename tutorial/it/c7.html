@@ -44,22 +44,34 @@
 <pre><code>import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
-// 1. Il file resta sul server: qui lo leggiamo come sequenza di byte.
-const byte = readFileSync("referto.pdf");
+// 1. The file stays on the server: here we read it as a sequence of bytes.
+const bytes = readFileSync("report.txt");
 
-// 2. L'impronta sha256 sono 32 byte: li scriviamo come 64 caratteri esadecimali.
-const impronta = "0x" + createHash("sha256").update(byte).digest("hex");
+// 2. The SHA-256 fingerprint is 32 bytes: we write it as 64 hexadecimal characters.
+const fingerprint = "0x" + createHash("sha256").update(bytes).digest("hex");
 
-console.log(impronta); // questo valore (bytes32) va nel contratto come docHash</code></pre><h2>Riga per riga</h2><ol><li>Le prime due righe prendono due strumenti già inclusi in Node.js: uno per l'impronta, uno per leggere i file.</li><li><code>readFileSync</code> legge il PDF e lo trasforma in byte.</li><li><code>createHash("sha256")</code> prepara il calcolo, <code>update</code> gli dà i byte, <code>digest("hex")</code> restituisce il risultato in lettere e numeri.</li><li>Davanti mettiamo <code>0x</code> perché così il contratto riconosce un valore <code>bytes32</code>.</li></ol>
+console.log(fingerprint); // this bytes32 value goes into the contract as docHash</code></pre><p>Per provarlo crea un file di prova e salva lo script qui sopra con il nome <code>fingerprint.mjs</code> (l'estensione <code>.mjs</code> permette a Node di usare <code>import</code>); la funzione <code>documentIsIntact</code> qui sotto va nello stesso file. Lo stesso script, già completo, è nella cartella <code>starter/scripts/fingerprint.mjs</code> del repository.</p><pre><code>echo "Lab report, invented data, acidity 0.2" &gt; report.txt
+node fingerprint.mjs</code></pre><pre class="out"><code>0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6</code></pre><h2>Riga per riga</h2><ol><li>Le prime due righe prendono due strumenti già inclusi in Node.js: uno per l'impronta, uno per leggere i file.</li><li><code>readFileSync</code> legge il file (qui un file di testo, nella demo un PDF) e lo trasforma in byte.</li><li><code>createHash("sha256")</code> prepara il calcolo, <code>update</code> gli dà i byte, <code>digest("hex")</code> restituisce il risultato in lettere e numeri.</li><li>Davanti mettiamo <code>0x</code> perché così il contratto riconosce un valore <code>bytes32</code>.</li></ol>
 <p>La stessa funzione serve alla verifica: chiunque scarichi il documento può rifare il calcolo.</p>
-<pre><code>// Ricalcolo: l'impronta del file scaricato deve essere uguale a quella sulla catena.
-function documentoIntegro(fileBytes, docHashSullaCatena) {
-  const ora = "0x" + createHash("sha256").update(fileBytes).digest("hex");
-  return ora === docHashSullaCatena.toLowerCase();
+<pre><code>// Recheck: the fingerprint of the downloaded file must equal the one on the chain.
+function documentIsIntact(fileBytes, hashOnChain) {
+  const now = "0x" + createHash("sha256").update(fileBytes).digest("hex");
+  return now === hashOnChain.toLowerCase();
 }</code></pre><h2>Riga per riga</h2><ol><li>La funzione riceve i byte del file scaricato e l'impronta letta sulla catena.</li><li>Ricalcola l'impronta con lo stesso metodo.</li><li>Restituisce vero solo se le due coincidono; con <code>toLowerCase()</code> ignoriamo le differenze tra maiuscole e minuscole.</li></ol>
 <p>Nella demo il backend calcola l'impronta all'arrivo del file (massimo 5 MB, solo PDF, JPG o PNG), la salva nel suo archivio e la scrive sulla catena come <code>docHash</code>. Alla verifica la pagina pubblica confronta le due impronte per ogni documento.</p>
 <p>Un dettaglio utile: l'impronta prova che il file non è cambiato dopo la registrazione, non che il contenuto fosse vero.</p>
-<div class="try"><h2>Prova tu</h2><p>Salva un file di testo qualunque, calcolane l'impronta con lo script qui sopra, poi cambia una lettera nel file e ricalcola. Confronta le due impronte con la funzione documentoIntegro.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Sulla catena si scrive solo l'impronta di 32 byte, non il file.</li><li>Il file sta sul backend e chiunque può ricalcolarne l'impronta.</li><li>L'impronta prova che il file non è cambiato, non che sia vero.</li></ul></div><nav class="pn"><a href="c6.html">&larr; Chi può fare cosa</a><a href="index.html">Indice</a><a href="c8.html">Il QR e la pagina pubblica &rarr;</a></nav>
+<div class="tryit"><h2>Provalo subito</h2><p>Rifai il controllo su un documento vero della demo: il notebook scarica il referto del lotto 25B001, ne calcola l'impronta e la confronta con quella scritta sulla catena (sezioni 6 e 8).</p><div class="btns"><a class="btn" href="https://colab.research.google.com/github/JoeBosi/pietre-di-vita-demo/blob/main/notebooks/pietre_di_vita_verifica_it.ipynb" target="_blank" rel="noopener">Apri il notebook in Colab</a></div><p>Gratuito, funziona nel browser, solo dati pubblici. Colab chiede un account Google gratuito per eseguire le celle (menu <em>Runtime &gt; Esegui tutto</em>).</p></div>
+<div class="see"><h2>Cosa dovresti vedere</h2><p>Sul tuo computer, con il file di prova, <code>sha256sum</code> dà lo stesso valore dello script (su Mac: <code>shasum -a 256</code>):</p><pre class="out"><code>0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6
+5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6  report.txt</code></pre></div>
+<div class="see"><h2>Cosa dovresti vedere</h2><p>Nel notebook, sezioni 6 e 8: quattro documenti con <code>True</code> e la copia modificata di un solo bit che non coincide più:</p><pre class="out"><code>phase             file                    = API   = chain
+Raccolta          25B001-harvest.png      True    True
+Molitura          25B001-mill.png         True    True
+Analisi           25B001-report.pdf       True    True
+Imbottigliamento  25B001-label.png        True    True
+
+original intact? True
+modified intact? False</code></pre></div>
+<div class="try"><h2>Prova tu</h2><p>Cambia il contenuto di <code>report.txt</code> (per esempio acidity 0.9), calcolane l'impronta con lo script qui sopra, poi cambia una lettera nel file e ricalcola. Confronta le due impronte con la funzione documentIsIntact.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Sulla catena si scrive solo l'impronta di 32 byte, non il file.</li><li>Il file sta sul backend e chiunque può ricalcolarne l'impronta.</li><li>L'impronta prova che il file non è cambiato, non che sia vero.</li></ul></div><nav class="pn"><a href="c6.html">&larr; Chi può fare cosa</a><a href="index.html">Indice</a><a href="c8.html">Il QR e la pagina pubblica &rarr;</a></nav>
 </main>
 <footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Sito di Giuseppe Bosi</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Codice su GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>
 </body>

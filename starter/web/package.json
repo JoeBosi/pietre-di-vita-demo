@@ -1,0 +1,16 @@
+{
+  "name": "pietre-di-vita-verify-page",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "ethers": "6.13.4"
+  },
+  "devDependencies": {
+    "vite": "5.4.11"
+  }
+}

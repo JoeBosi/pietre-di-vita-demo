@@ -44,22 +44,34 @@
 <pre><code>import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
-// 1. Il file resta sul server: qui lo leggiamo come sequenza di byte.
-const byte = readFileSync("referto.pdf");
+// 1. The file stays on the server: here we read it as a sequence of bytes.
+const bytes = readFileSync("report.txt");
 
-// 2. L'impronta sha256 sono 32 byte: li scriviamo come 64 caratteri esadecimali.
-const impronta = "0x" + createHash("sha256").update(byte).digest("hex");
+// 2. The SHA-256 fingerprint is 32 bytes: we write it as 64 hexadecimal characters.
+const fingerprint = "0x" + createHash("sha256").update(bytes).digest("hex");
 
-console.log(impronta); // questo valore (bytes32) va nel contratto come docHash</code></pre><h2>Line by line</h2><ol><li>The first two lines take two tools already included in Node.js: one for the fingerprint, one for reading files.</li><li><code>readFileSync</code> reads the PDF and turns it into bytes.</li><li><code>createHash("sha256")</code> prepares the calculation, <code>update</code> feeds it the bytes, <code>digest("hex")</code> returns the result as letters and digits.</li><li>We prefix <code>0x</code> so the contract recognises a <code>bytes32</code> value.</li></ol>
+console.log(fingerprint); // this bytes32 value goes into the contract as docHash</code></pre><p>To try it, create a sample file and save the script above as <code>fingerprint.mjs</code> (the <code>.mjs</code> ending lets Node use <code>import</code>); the <code>documentIsIntact</code> function below goes into the same file. The same script, already complete, is in the <code>starter/scripts/fingerprint.mjs</code> folder of the repository.</p><pre><code>echo "Lab report, invented data, acidity 0.2" &gt; report.txt
+node fingerprint.mjs</code></pre><pre class="out"><code>0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6</code></pre><h2>Line by line</h2><ol><li>The first two lines take two tools already included in Node.js: one for the fingerprint, one for reading files.</li><li><code>readFileSync</code> reads the file (here a text file, in the demo a PDF) and turns it into bytes.</li><li><code>createHash("sha256")</code> prepares the calculation, <code>update</code> feeds it the bytes, <code>digest("hex")</code> returns the result as letters and digits.</li><li>We prefix <code>0x</code> so the contract recognises a <code>bytes32</code> value.</li></ol>
 <p>The same function is used for verification: anyone who downloads the document can redo the calculation.</p>
-<pre><code>// Ricalcolo: l'impronta del file scaricato deve essere uguale a quella sulla catena.
-function documentoIntegro(fileBytes, docHashSullaCatena) {
-  const ora = "0x" + createHash("sha256").update(fileBytes).digest("hex");
-  return ora === docHashSullaCatena.toLowerCase();
+<pre><code>// Recheck: the fingerprint of the downloaded file must equal the one on the chain.
+function documentIsIntact(fileBytes, hashOnChain) {
+  const now = "0x" + createHash("sha256").update(fileBytes).digest("hex");
+  return now === hashOnChain.toLowerCase();
 }</code></pre><h2>Line by line</h2><ol><li>The function receives the bytes of the downloaded file and the fingerprint read from the chain.</li><li>It recomputes the fingerprint with the same method.</li><li>It returns true only if the two match; <code>toLowerCase()</code> ignores upper/lower case differences.</li></ol>
 <p>In the demo the backend computes the fingerprint when the file arrives (at most 5 MB, PDF, JPG or PNG only), stores the file and writes the fingerprint on the chain as <code>docHash</code>. At verification the public page compares the two fingerprints for each document.</p>
 <p>A useful detail: the fingerprint proves the file has not changed since registration, not that its content was true.</p>
-<div class="try"><h2>Try it yourself</h2><p>Save any text file, compute its fingerprint with the script above, then change one letter in the file and recompute. Compare the two fingerprints with the documentoIntegro function.</p></div><div class="learn"><h2>What you learned</h2><ul><li>Only the 32-byte fingerprint is written on the chain, not the file.</li><li>The file lives on the backend and anyone can recompute its fingerprint.</li><li>The fingerprint proves the file is unchanged, not that it is true.</li></ul></div><nav class="pn"><a href="c6.html">&larr; Who can do what</a><a href="index.html">Contents</a><a href="c8.html">The QR code and the public page &rarr;</a></nav>
+<div class="tryit"><h2>Try it now</h2><p>Repeat the check on a real document of the demo: the notebook downloads the lab report of lot 25B001, computes its fingerprint and compares it with the one written on the chain (sections 6 and 8).</p><div class="btns"><a class="btn" href="https://colab.research.google.com/github/JoeBosi/pietre-di-vita-demo/blob/main/notebooks/pietre_di_vita_verify_en.ipynb" target="_blank" rel="noopener">Open the notebook in Colab</a></div><p>Free, runs in your browser, public data only. Colab asks for a free Google account to run the cells (menu <em>Runtime &gt; Run all</em>).</p></div>
+<div class="see"><h2>What you should see</h2><p>On your computer, with the sample file, <code>sha256sum</code> gives the same value as the script (on Mac: <code>shasum -a 256</code>):</p><pre class="out"><code>0x5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6
+5c94f9833f90635d7e6979852642be73376ee15c5502d6856961c1d35270d1b6  report.txt</code></pre></div>
+<div class="see"><h2>What you should see</h2><p>In the notebook, sections 6 and 8: four documents with <code>True</code> and the copy changed by a single bit that no longer matches:</p><pre class="out"><code>phase             file                    = API   = chain
+Raccolta          25B001-harvest.png      True    True
+Molitura          25B001-mill.png         True    True
+Analisi           25B001-report.pdf       True    True
+Imbottigliamento  25B001-label.png        True    True
+
+original intact? True
+modified intact? False</code></pre></div>
+<div class="try"><h2>Try it yourself</h2><p>Change the content of <code>report.txt</code> (for example acidity 0.9), compute its fingerprint with the script above, then change one letter in the file and recompute. Compare the two fingerprints with the documentIsIntact function.</p></div><div class="learn"><h2>What you learned</h2><ul><li>Only the 32-byte fingerprint is written on the chain, not the file.</li><li>The file lives on the backend and anyone can recompute its fingerprint.</li><li>The fingerprint proves the file is unchanged, not that it is true.</li></ul></div><nav class="pn"><a href="c6.html">&larr; Who can do what</a><a href="index.html">Contents</a><a href="c8.html">The QR code and the public page &rarr;</a></nav>
 </main>
 <footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Computer Science and Technology</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Giuseppe Bosi's website</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Code on GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>
 </body>

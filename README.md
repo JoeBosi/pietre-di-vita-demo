@@ -8,7 +8,8 @@ An educational concept: a fictional Tuscan olive mill whose bottles are traced i
 - **Tutorial (IT/EN):** https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/
 - **Verified contracts:** see the Sourcify section at the end.
 - **Italian version:** [README.it.md](README.it.md)
-- `starter/` has a minimal, working version you can build from scratch (see the tutorial, part "Build your own").
+- `starter/` has a minimal, working version you can build from scratch (see the tutorial, part "Build your own"). It also holds the small contracts of the chapters (`starter/contracts`), a fingerprint script and a check page (`starter/web`).
+- `notebooks/` has two Google Colab notebooks (English and Italian) that verify a real bottle with Python: [open in Colab](https://colab.research.google.com/github/JoeBosi/pietre-di-vita-demo/blob/main/notebooks/pietre_di_vita_verify_en.ipynb).
 - **Author:** Prof. Giuseppe Bosi, https://www.giuseppebosi.com , https://www.linkedin.com/in/giuseppebosi
 - **License:** MIT (see [LICENSE](LICENSE)).
 
