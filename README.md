@@ -1,5 +1,7 @@
 # Pietre di Vita (olive oil traceability demo)
 
+![Frantoio Pietre di Vita · Pietre di Vita Olive Mill](frontend/public/og.jpg)
+
 An educational concept: a fictional Tuscan olive mill whose bottles are traced in four signed phases and verifiable from a QR code. Polygon Amoy testnet only, no real value, all data fictional.
 
 - **Live demo:** https://tracciabilita-olio.blockchain.giuseppebosi.com
