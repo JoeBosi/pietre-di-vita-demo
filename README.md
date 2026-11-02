@@ -33,3 +33,8 @@ Lots `25B001` (360 bottles), `25B002` (270), `25B003` (240, recalled). Try `/api
 4. `backend/.env`: `RPC_URL`, `CHAIN_ID=80002`, `CONTRACT_ADDRESS`, the four `KEY_*`, `SESSION_SECRET`, `INITIAL_PASSWORD_*`, `PUBLIC_BASE_URL`.
 5. `npm run seed` (NETWORK defaults to `amoy`), then `npm start`.
 6. Verify: `/api/health` is onchain; `/api/pubblico/bottiglia/25B001/1` has `verifica.onchain` true and every `hashMatch.match` true; `25B003` shows as recalled. Never commit `.env` files.
+
+## Verified source (Sourcify, Polygon Amoy)
+- PietreDiVita: https://repo.sourcify.dev/80002/0x158a5026eD83888a443f2bA921Faf07C2D04bE0E
+
+Re-run with `node contracts/scripts/verify-sourcify.js 80002 <address> PietreDiVita`.
