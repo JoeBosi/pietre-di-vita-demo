@@ -3,8 +3,8 @@ import { useI18n } from '../i18n';
 import { apiUrl } from '../lib/api';
 
 const TXT = {
-  it: { mill: 'Frantoio Pietre di Vita', evoo: 'Olio extravergine di oliva', lot: 'Lotto 25B001', bottle: 'Bottiglia 1 di 240', harvest: 'Raccolta 2025 · Toscana' },
-  en: { mill: 'Pietre di Vita Olive Mill', evoo: 'Extra virgin olive oil', lot: 'Lot 25B001', bottle: 'Bottle 1 of 240', harvest: 'Harvest 2025 · Tuscany' },
+  it: { mill1: 'Frantoio', mill2: 'Pietre di Vita', evoo: 'Olio extravergine di oliva', lot: 'Lotto 25B001', bottle: 'Bottiglia 1 di 240', harvest: 'Raccolta 2025 · Toscana' },
+  en: { mill1: 'Pietre di Vita', mill2: 'Olive Mill', evoo: 'Extra virgin olive oil', lot: 'Lot 25B001', bottle: 'Bottle 1 of 240', harvest: 'Harvest 2025 · Tuscany' },
 } as const;
 
 /** The real experience: an olive oil bottle whose label carries the real QR of the sample bottle. Tap it, or scan it. */
@@ -20,14 +20,15 @@ export function BottleExperience() {
           <path d="M98 36h44v52c0 22 58 34 58 92v198a24 24 0 0 1-24 24H64a24 24 0 0 1-24-24V180c0-58 58-70 58-92z" fill="#c9a82e" stroke="#4c6422" strokeWidth="4" />
           <path d="M104 44v46c0 14-30 24-44 54" fill="none" stroke="#f3e29a" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
           <rect x="52" y="150" width="136" height="236" rx="10" fill="#fbf6e4" stroke="#4c6422" strokeWidth="2.5" />
-          <text x="120" y="172" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="12.5" fontWeight="700" fill="#2a3913">{x.mill}</text>
-          <path d="M92 182c9-8 18-8 28 0 10-8 19-8 28 0" fill="none" stroke="#5f7a2a" strokeWidth="2" />
-          <text x="120" y="199" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="10.5" fontStyle="italic" fill="#3b4f1b">{x.evoo}</text>
-          <rect x="68" y="208" width="104" height="104" rx="4" fill="#ffffff" stroke="#111111" strokeWidth="1.5" />
-          <image href={apiUrl('/api/qr/25B001/1.png')} x="72" y="212" width="96" height="96" preserveAspectRatio="xMidYMid meet" style={{ imageRendering: 'pixelated' }} />
-          <text x="120" y="332" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="12" fontWeight="700" fill="#111111">{x.lot}</text>
-          <text x="120" y="349" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="11" fill="#2a3913">{x.bottle}</text>
-          <text x="120" y="371" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="9.5" fill="#4c6422">{x.harvest}</text>
+          <text x="120" y="170" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="14" fontWeight="700" fill="#2a3913">{x.mill1}</text>
+          <text x="120" y="187" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="14" fontWeight="700" fill="#2a3913">{x.mill2}</text>
+          <path d="M96 196c8-6 16-6 24 0 8-6 16-6 24 0" fill="none" stroke="#5f7a2a" strokeWidth="2" />
+          <text x="120" y="211" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="9.5" fontStyle="italic" fill="#3b4f1b">{x.evoo}</text>
+          <rect x="68" y="219" width="104" height="104" rx="4" fill="#ffffff" stroke="#111111" strokeWidth="1.5" />
+          <image href={apiUrl('/api/qr/25B001/1.png')} x="72" y="223" width="96" height="96" preserveAspectRatio="xMidYMid meet" style={{ imageRendering: 'pixelated' }} />
+          <text x="120" y="341" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="12" fontWeight="700" fill="#111111">{x.lot}</text>
+          <text x="120" y="357" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="11" fill="#2a3913">{x.bottle}</text>
+          <text x="120" y="375" textAnchor="middle" fontFamily="system-ui, sans-serif" fontSize="9.5" fill="#4c6422">{x.harvest}</text>
         </svg>
       </Link>
       <div className="space-y-3 text-center sm:text-left">
