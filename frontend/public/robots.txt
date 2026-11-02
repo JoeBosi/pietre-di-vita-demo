@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /b/PROVA-
+Disallow: /en/b/PROVA-
+
+Sitemap: https://tracciabilita-olio.blockchain.giuseppebosi.com/sitemap.xml

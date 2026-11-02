@@ -119,7 +119,7 @@ function Step({ p, data, fmt }: { p: Passo; data: Payload; fmt: (s: number) => s
         <p className="text-sm text-gray-700">{who ? t(who) : p.attore} · {fmt(p.fase === 0 && data.lotto.data_raccolta ? data.lotto.data_raccolta : p.timestamp)}</p>
         <p className="text-base">{pickText(lang, p.descrizione, p.descrizione_en)}</p>
         {d && (isImg ? (
-          <a href={apiUrl(d.url)} target="_blank" rel="noreferrer"><img src={apiUrl(d.url)} alt={t('tl.photo')} className="h-32 sm:h-40 w-auto rounded-lg border border-gray-200" loading="lazy" /></a>
+          <a href={apiUrl(d.url)} target="_blank" rel="noreferrer"><img src={apiUrl(d.url)} alt={`${t('tl.photo')}: ${d.filename}`} className="h-32 sm:h-40 w-auto rounded-lg border border-gray-200" loading="lazy" /></a>
         ) : (
           <a href={apiUrl(d.url)} target="_blank" rel="noreferrer" className="inline-flex items-center min-h-11 text-olive-800 font-medium underline">{t('tl.doc')} ({d.filename})</a>
         ))}

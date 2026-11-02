@@ -1,0 +1,168 @@
+{
+  "host": "https://tracciabilita-olio.blockchain.giuseppebosi.com",
+  "repo": "https://github.com/JoeBosi/pietre-di-vita-demo",
+  "lastmod": "2026-11-02",
+  "siteName": { "it": "Frantoio Pietre di Vita", "en": "Pietre di Vita Olive Mill" },
+  "ogImage": "/og.jpg",
+  "ogImageAlt": {
+    "it": "Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita",
+    "en": "Extra virgin olive oil bottle with a QR code: Pietre di Vita Olive Mill"
+  },
+  "author": {
+    "name": "Giuseppe Bosi",
+    "url": "https://www.giuseppebosi.com",
+    "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]
+  },
+  "footerLinks": {
+    "it": { "site": "Sito di Giuseppe Bosi", "github": "Codice su GitHub", "linkedin": "LinkedIn" },
+    "en": { "site": "Giuseppe Bosi's website", "github": "Code on GitHub", "linkedin": "LinkedIn" }
+  },
+  "siteDescription": {
+    "it": "Concept didattico su Polygon Amoy (rete di prova): ogni bottiglia di olio extravergine di oliva è tracciata in 4 fasi firmate e si verifica dal QR code.",
+    "en": "Educational concept on Polygon Amoy (test network): every extra virgin olive oil bottle is traced in 4 signed phases and verified from its QR code."
+  },
+  "pages": [
+    {
+      "id": "home", "path": "/", "prerender": true,
+      "it": {
+        "name": "Home",
+        "title": "Tracciabilità olio blockchain e QR | Frantoio Pietre di Vita",
+        "description": "Verifica la bottiglia di olio extravergine di oliva: inquadra il QR code e leggi la storia dall'oliveto allo scaffale, registrata sulla blockchain in Toscana.",
+        "h1": "Scegli il tuo olio extravergine di oliva in modo consapevole: la sua storia è certa e la verifichi tu.",
+        "summary": "Pietre di Vita è un frantoio toscano di fantasia: ogni bottiglia di olio extravergine di oliva ha un codice QR che mostra la tracciabilità dell'olio sulla blockchain, in 4 fasi firmate (raccolta, molitura, analisi, imbottigliamento). Dimostrazione didattica su rete di prova, con dati di esempio."
+      },
+      "en": {
+        "name": "Home",
+        "title": "Olive Oil Traceability on Blockchain | Pietre di Vita",
+        "description": "Check an extra virgin olive oil bottle: scan its QR code and read its story from grove to shelf, recorded on a blockchain in Tuscany. Educational test demo.",
+        "h1": "Choose your extra virgin olive oil with confidence: its story is certain and you check it yourself.",
+        "summary": "Pietre di Vita is a fictional Tuscan olive mill: every bottle of extra virgin olive oil carries a QR code that shows its supply chain traceability on a blockchain, in 4 signed phases (harvest, milling, lab analysis, bottling). An educational demo on a test network with sample data."
+      },
+      "links": ["come-funziona", "filiera", "b-25B001", "b-25B003", "tutorial"]
+    },
+    {
+      "id": "come-funziona", "path": "/come-funziona", "prerender": true,
+      "it": {
+        "name": "Come funziona",
+        "title": "Come funziona la tracciabilità dell'olio | Pietre di Vita",
+        "description": "Quattro fasi, quattro firme: scopri chi registra raccolta, molitura, analisi e imbottigliamento dell'olio extravergine e come funziona un richiamo.",
+        "h1": "Come funziona",
+        "summary": "Quattro passi, quattro persone, una prova per ciascuno: raccolta delle olive, molitura, analisi di laboratorio e imbottigliamento. Ogni prova lascia una traccia sul registro pubblico (blockchain) e si controlla dal QR code della bottiglia, richiami compresi."
+      },
+      "en": {
+        "name": "How it works",
+        "title": "How Olive Oil Traceability Works | Pietre di Vita",
+        "description": "Four phases, four signatures: see who records the harvest, milling, lab analysis and bottling of extra virgin olive oil, and how a lot recall works.",
+        "h1": "How it works",
+        "summary": "Four steps, four people, one proof each: olive harvest, milling, laboratory analysis and bottling. Every proof leaves a trace on the public record (a blockchain) and is checked from the bottle's QR code, recalls included."
+      },
+      "links": ["home", "filiera", "b-25B001", "tutorial"]
+    },
+    {
+      "id": "filiera", "path": "/filiera", "prerender": true,
+      "it": {
+        "name": "Area filiera",
+        "title": "Area filiera: prova la tracciabilità | Pietre di Vita",
+        "description": "Prova la filiera dell'olio extravergine: registra raccolta, molitura, analisi e imbottigliamento su rete di prova e ottieni il QR code della tua bottiglia.",
+        "h1": "Area filiera",
+        "summary": "Per chi lavora nella filiera: con la modalità Prova la filiera registri tu i passi di un lotto di olio extravergine di oliva (agricoltore, frantoio, laboratorio, imbottigliatore) su rete di prova e ottieni il QR code della bottiglia da verificare."
+      },
+      "en": {
+        "name": "Supply chain area",
+        "title": "Supply Chain Area: Try Traceability | Pietre di Vita",
+        "description": "Try the olive oil supply chain yourself: record harvest, milling, analysis and bottling on a test network and get the QR code of your own bottle.",
+        "h1": "Supply chain area",
+        "summary": "For people working in the supply chain: in Try the supply chain mode you record the steps of an extra virgin olive oil lot yourself (farmer, mill, laboratory, bottler) on a test network and get the bottle's QR code to verify."
+      },
+      "links": ["home", "come-funziona", "b-25B001", "tutorial"]
+    },
+    {
+      "id": "b-25B001", "path": "/b/25B001/1", "prerender": true, "example": true,
+      "it": {
+        "name": "Bottiglia di esempio 25B001",
+        "title": "Verifica bottiglia olio 1 del lotto 25B001 | Pietre di Vita",
+        "description": "Verifica la bottiglia d'olio extravergine di esempio: lotto 25B001, Frantoio, Colline del Chianti. Le quattro fasi firmate e confrontate con la blockchain.",
+        "h1": "Bottiglia 1 di 360, lotto 25B001",
+        "summary": "Pagina pubblica di una bottiglia di esempio, la numero 1 del lotto 25B001 (cultivar Frantoio, Colline del Chianti, Toscana): le quattro fasi firmate (raccolta, molitura, analisi, imbottigliamento) con le prove sul registro pubblico. Dati di esempio su rete di prova."
+      },
+      "en": {
+        "name": "Sample bottle 25B001",
+        "title": "Verify Olive Oil Bottle 1 of Lot 25B001 | Pietre di Vita",
+        "description": "Verify the sample extra virgin olive oil bottle: lot 25B001, Frantoio cultivar, Chianti hills. The four signed phases checked against the blockchain.",
+        "h1": "Bottle 1 of 360, lot 25B001",
+        "summary": "Public page of a sample bottle, number 1 of lot 25B001 (Frantoio cultivar, Chianti hills, Tuscany): the four signed phases (harvest, milling, analysis, bottling) with their proofs on the public record. Sample data on a test network."
+      },
+      "links": ["home", "b-25B003", "come-funziona"]
+    },
+    {
+      "id": "b-25B003", "path": "/b/25B003/1", "prerender": true, "example": true,
+      "it": {
+        "name": "Esempio di lotto richiamato 25B003",
+        "title": "Lotto olio richiamato 25B003, bottiglia 1 | Pietre di Vita",
+        "description": "Esempio di richiamo di un lotto di olio extravergine: la pagina di verifica della bottiglia 1 del lotto 25B003 mostra l'avviso e il motivo del richiamo.",
+        "h1": "Bottiglia 1 di 240, lotto 25B003",
+        "summary": "Pagina pubblica di una bottiglia di esempio del lotto 25B003 (cultivar Moraiolo, Colline del Chianti), richiamato: la pagina mostra l'avviso, il motivo del richiamo e le quattro fasi firmate. Dati di esempio su rete di prova."
+      },
+      "en": {
+        "name": "Recalled lot example 25B003",
+        "title": "Recalled Olive Oil Lot 25B003, Bottle 1 | Pietre di Vita",
+        "description": "Example of an extra virgin olive oil lot recall: the verification page of bottle 1 in lot 25B003 shows the warning and the reason for the recall.",
+        "h1": "Bottle 1 of 240, lot 25B003",
+        "summary": "Public page of a sample bottle from lot 25B003 (Moraiolo cultivar, Chianti hills), which has been recalled: the page shows the warning, the reason for the recall and the four signed phases. Sample data on a test network."
+      },
+      "links": ["home", "b-25B001", "come-funziona"]
+    }
+  ],
+  "dynamicBottle": {
+    "it": {
+      "title": "Bottiglia {n} del lotto {codice} | Frantoio Pietre di Vita",
+      "description": "Verifica la bottiglia {n} del lotto {codice} di olio extravergine di oliva: le fasi firmate dall'oliveto alla bottiglia, controllate sulla blockchain."
+    },
+    "en": {
+      "title": "Bottle {n} of lot {codice} | Pietre di Vita Olive Mill",
+      "description": "Verify bottle {n} of olive oil lot {codice}: the signed phases from grove to bottle, checked against the blockchain. Educational test demo."
+    }
+  },
+  "tutorial": {
+    "index": {
+      "id": "index", "it": "index.html", "en": "index.html", "dirUrl": true,
+      "itT": { "title": "Tutorial tracciabilità olio blockchain | Pietre di Vita", "description": "Tutorial gratuito: come si registra una bottiglia di olio extravergine su blockchain, in quali fasi, con il QR code. Dal linguaggio semplice al codice." },
+      "enT": { "title": "Olive Oil Traceability Tutorial | Pietre di Vita", "description": "Free tutorial: how an extra virgin olive oil bottle is recorded on a blockchain, in which phases, with a QR code. From plain language to Solidity code." }
+    },
+    "chapters": [
+      { "id": "c1", "it": "c1.html", "en": "c1.html",
+        "itT": { "title": "Perché tracciare l'olio extravergine | Tutorial", "description": "Capitolo 1: perché sapere da dove viene una bottiglia d'olio serve a chi la compra, a chi la produce e alla legge. Tracciabilità dell'olio spiegata semplice." },
+        "enT": { "title": "Why Trace Extra Virgin Olive Oil | Tutorial", "description": "Chapter 1: why knowing where an olive oil bottle comes from matters to buyers, to producers and to the law. Olive oil traceability explained in plain words." } },
+      { "id": "c2", "it": "c2.html", "en": "c2.html",
+        "itT": { "title": "La storia di una bottiglia d'olio in 4 fasi | Tutorial", "description": "Capitolo 2: dall'oliveto allo scaffale, per ogni fase di una bottiglia di olio extravergine vedi chi agisce, con quale strumento e quale prova lascia." },
+        "enT": { "title": "An Olive Oil Bottle's Story in 4 Phases | Tutorial", "description": "Chapter 2: from grove to shelf, for each phase of an extra virgin olive oil bottle see who acts, with which tool and which proof is left behind." } },
+      { "id": "c3", "it": "c3.html", "en": "c3.html",
+        "itT": { "title": "Cos'è una blockchain e l'impronta hash | Tutorial", "description": "Capitolo 3: cos'è una blockchain, il registro che nessuno può riscrivere, e cos'è l'impronta (hash) di un documento, con un esempio da provare al terminale." },
+        "enT": { "title": "What Is a Blockchain and a Hash | Tutorial", "description": "Chapter 3: what a blockchain is, the register nobody can rewrite, and what the fingerprint (hash) of a document is, with an example to try in the terminal." } },
+      { "id": "c4", "it": "c4.html", "en": "c4.html",
+        "itT": { "title": "Verificare una bottiglia d'olio dal QR code | Tutorial", "description": "Capitolo 4: inquadra il QR code di una bottiglia di olio e scopri le tre verifiche che la pagina pubblica fa per te sul registro blockchain." },
+        "enT": { "title": "Verify an Olive Oil Bottle from Its QR Code | Tutorial", "description": "Chapter 4: scan the QR code of an olive oil bottle and see the three checks the public page runs for you against the blockchain record." } },
+      { "id": "c5", "it": "c5.html", "en": "c5.html",
+        "itT": { "title": "Modellare un lotto d'olio in Solidity | Tutorial", "description": "Capitolo 5: scrivi la struttura minima di un lotto di olio in Solidity, con dati, fasi e un token per ogni lotto, su Polygon Amoy (rete di prova)." },
+        "enT": { "title": "Model an Olive Oil Lot in Solidity | Tutorial", "description": "Chapter 5: write the minimal structure of an olive oil lot in Solidity, with data, phases and one token per lot, on Polygon Amoy (test network)." } },
+      { "id": "c6", "it": "c6.html", "en": "c6.html",
+        "itT": { "title": "Ruoli e ordine delle fasi in Solidity | Tutorial", "description": "Capitolo 6: limita ogni fase della filiera dell'olio al ruolo giusto e imponi l'ordine delle fasi direttamente nello smart contract." },
+        "enT": { "title": "Roles and Phase Order in Solidity | Tutorial", "description": "Chapter 6: restrict each olive oil supply chain phase to the right role and enforce the phase order directly inside the smart contract." } },
+      { "id": "c7", "it": "c7.html", "en": "c7.html",
+        "itT": { "title": "Documenti fuori dalla catena e hash | Tutorial", "description": "Capitolo 7: perché sulla blockchain va solo l'impronta del documento e come ricalcolarla per controllare un referto di laboratorio dell'olio." },
+        "enT": { "title": "Off-Chain Documents and Hashes | Tutorial", "description": "Chapter 7: why only the document fingerprint goes on the blockchain and how to recompute it to check an olive oil laboratory report." } },
+      { "id": "c8", "it": "c8.html", "en": "c8.html",
+        "itT": { "title": "QR code e pagina pubblica della bottiglia | Tutorial", "description": "Capitolo 8: collega il QR code della bottiglia di olio a una funzione di sola lettura che risponde se il lotto esiste ed è richiamato." },
+        "enT": { "title": "QR Code and the Public Bottle Page | Tutorial", "description": "Chapter 8: link the olive oil bottle's QR code to a read-only function that tells whether the lot exists and whether it has been recalled." } },
+      { "id": "c9", "it": "c9.html", "en": "c9.html",
+        "itT": { "title": "Dalla demo alla produzione: cosa manca | Tutorial", "description": "Capitolo 9: cosa separa questa demo di tracciabilità dell'olio con blockchain da un sistema usato davvero in produzione, in modo onesto." },
+        "enT": { "title": "From Demo to Production: What Is Missing | Tutorial", "description": "Chapter 9: what separates this olive oil blockchain traceability demo from a system used in real production, explained honestly." } },
+      { "id": "faq", "it": "faq.html", "en": "faq.html",
+        "itT": { "title": "Domande frequenti sull'olio su blockchain | Tutorial", "description": "Le sei domande più comuni sulla tracciabilità dell'olio con blockchain, con risposte oneste: cosa garantisce, cosa no e cosa serve per farlo davvero." },
+        "enT": { "title": "FAQ on Olive Oil on Blockchain | Tutorial", "description": "The six most common questions about olive oil traceability on a blockchain, answered honestly: what it guarantees, what it does not, what real use needs." } },
+      { "id": "coding", "it": "costruisci.html", "en": "build.html",
+        "itT": { "title": "Coding: costruisci la tracciabilità dell'olio | Tutorial", "description": "Parti da una cartella vuota e costruisci passo passo un contratto Solidity, i test, un server con QR code e una pagina pubblica che dice verde o rosso." },
+        "enT": { "title": "Coding: Build Olive Oil Traceability | Tutorial", "description": "Start from an empty folder and build, step by step, a Solidity contract, its tests, a QR code server and a public page that says green or red." } }
+    ]
+  }
+}

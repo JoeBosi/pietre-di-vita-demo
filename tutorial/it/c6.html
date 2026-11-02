@@ -3,9 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chi può fare cosa - Pietre di Vita</title>
 <link rel="stylesheet" href="style.css">
-<link rel="alternate" hreflang="en" href="../en/c6.html">
+<!-- seo:start -->
+<title>Ruoli e ordine delle fasi in Solidity | Tutorial</title>
+<meta name="description" content="Capitolo 6: limita ogni fase della filiera dell&#x27;olio al ruolo giusto e imponi l&#x27;ordine delle fasi direttamente nello smart contract.">
+<link rel="canonical" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html">
+<link rel="alternate" hreflang="it" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html">
+<link rel="alternate" hreflang="en" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c6.html">
+<link rel="alternate" hreflang="x-default" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Frantoio Pietre di Vita">
+<meta property="og:title" content="Ruoli e ordine delle fasi in Solidity | Tutorial">
+<meta property="og:description" content="Capitolo 6: limita ogni fase della filiera dell&#x27;olio al ruolo giusto e imponi l&#x27;ordine delle fasi direttamente nello smart contract.">
+<meta property="og:url" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html">
+<meta property="og:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ruoli e ordine delle fasi in Solidity | Tutorial">
+<meta name="twitter:description" content="Capitolo 6: limita ogni fase della filiera dell&#x27;olio al ruolo giusto e imponi l&#x27;ordine delle fasi direttamente nello smart contract.">
+<meta name="twitter:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta name="twitter:image:alt" content="Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "6. Chi può fare cosa", "description": "Capitolo 6: limita ogni fase della filiera dell'olio al ruolo giusto e imponi l'ordine delle fasi direttamente nello smart contract.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html", "inLanguage": "it", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c6.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: la storia di una bottiglia d'olio", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/"}}</script>
+<!-- seo:end -->
 </head>
 <body>
 <div class="stickybar"><div class="concept" role="note"><b>BLOCKCHAIN: CASO D'USO</b>Concept a titolo didattico, rete di prova.</div>
@@ -57,6 +81,6 @@ contract PassiMinimi is AccessControl {
 <p>Il lotto di prova è separato dai lotti d'esempio: il visitatore scrive solo sul proprio lotto, con una sessione distinta da quella dei ruoli veri, e il lotto non compare in nessun elenco pubblico (si ritrova con il proprio link). Il referto di laboratorio è un PDF di esempio generato dal server, con dati di fantasia. Tutto avviene su rete di prova.</p>
 <div class="try"><h2>Prova tu</h2><p>Aggiungi un terzo ruolo, IMBOTTIGLIATORE_ROLE, e una fase Imbottigliamento dopo Analisi con la sua funzione. Ricompila: se hai ricopiato lo schema di molisci, ci metti pochi minuti.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Un ruolo è un nome a cui assegniamo degli indirizzi; onlyRole blocca gli altri.</li><li>L'ordine delle fasi è controllato dal contratto, non dalla buona volontà.</li><li>Un passo scritto non si cancella: il registro cresce soltanto.</li></ul></div><h2>Per approfondire</h2><ul><li><a href="https://docs.openzeppelin.com/contracts/5.x/access-control">Controllo degli accessi in OpenZeppelin</a></li></ul><nav class="pn"><a href="c5.html">&larr; Modelliamo il lotto</a><a href="index.html">Indice</a><a href="c7.html">I documenti fuori dalla catena &rarr;</a></nav>
 </main>
-<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche</a></footer>
+<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Sito di Giuseppe Bosi</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Codice su GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>
 </body>
 </html>

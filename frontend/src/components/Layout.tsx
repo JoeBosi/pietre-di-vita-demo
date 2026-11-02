@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useI18n } from '../i18n';
+import { Seo } from './Seo';
 
 const flagUK = (
   <svg width="24" height="16" viewBox="0 0 60 40" aria-hidden="true" className="rounded-sm border border-gray-300">
@@ -25,6 +26,7 @@ export function Layout() {
     `flex-none whitespace-nowrap text-center px-1 min-[400px]:px-2 min-[900px]:px-3 py-2 min-h-11 flex items-center justify-center rounded-lg leading-tight text-[13px] min-[400px]:text-sm min-[900px]:text-base transition-colors ${isActive ? 'font-semibold text-white bg-olive-700' : 'text-olive-900 hover:bg-olive-100'}`;
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo />
       <div className="sticky top-0 z-40"><div className="bg-slate-900 px-3 py-1 text-center text-xs sm:text-sm sm:px-4 sm:py-2 font-semibold leading-snug text-white" role="note"><span className="mr-2 rounded bg-amber-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-slate-900">{t('concept.tag')}</span><span className="sm:hidden">{t('concept.short')}</span><span className="hidden sm:inline">{t('concept.banner')}</span></div>
       <header className="border-b border-olive-100 bg-white">
         <div className="max-w-3xl min-[900px]:max-w-5xl mx-auto px-4 py-1.5 min-[900px]:py-2.5 flex flex-wrap min-[900px]:flex-nowrap items-center gap-x-3 min-[900px]:gap-x-4 gap-y-1">
@@ -44,7 +46,11 @@ export function Layout() {
       <footer className="border-t border-olive-100 bg-white text-sm text-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
           <p className="text-xs text-gray-600">{t('foot.sig')}</p>
-          <p><a className="text-olive-700 underline" href="https://www.giuseppebosi.com">{t('foot.site')}</a></p>
+          <p className="flex flex-wrap gap-x-5 gap-y-1">
+            <a className="text-olive-700 underline inline-flex items-center min-h-11" href="https://www.giuseppebosi.com" target="_blank" rel="noopener">{t('foot.site')}</a>
+            <a className="text-olive-700 underline inline-flex items-center min-h-11" href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">{t('foot.gh')}</a>
+            <a className="text-olive-700 underline inline-flex items-center min-h-11" href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">{t('foot.li')}</a>
+          </p>
         </div>
       </footer>
     </div>

@@ -3,9 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Il registro che nessuno può riscrivere - Pietre di Vita</title>
 <link rel="stylesheet" href="style.css">
-<link rel="alternate" hreflang="en" href="../en/c3.html">
+<!-- seo:start -->
+<title>Cos&#x27;è una blockchain e l&#x27;impronta hash | Tutorial</title>
+<meta name="description" content="Capitolo 3: cos&#x27;è una blockchain, il registro che nessuno può riscrivere, e cos&#x27;è l&#x27;impronta (hash) di un documento, con un esempio da provare al terminale.">
+<link rel="canonical" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<link rel="alternate" hreflang="it" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<link rel="alternate" hreflang="en" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html">
+<link rel="alternate" hreflang="x-default" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Frantoio Pietre di Vita">
+<meta property="og:title" content="Cos&#x27;è una blockchain e l&#x27;impronta hash | Tutorial">
+<meta property="og:description" content="Capitolo 3: cos&#x27;è una blockchain, il registro che nessuno può riscrivere, e cos&#x27;è l&#x27;impronta (hash) di un documento, con un esempio da provare al terminale.">
+<meta property="og:url" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<meta property="og:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cos&#x27;è una blockchain e l&#x27;impronta hash | Tutorial">
+<meta name="twitter:description" content="Capitolo 3: cos&#x27;è una blockchain, il registro che nessuno può riscrivere, e cos&#x27;è l&#x27;impronta (hash) di un documento, con un esempio da provare al terminale.">
+<meta name="twitter:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta name="twitter:image:alt" content="Bottiglia di olio extravergine di oliva con codice QR: Frantoio Pietre di Vita">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "3. Il registro che nessuno può riscrivere", "description": "Capitolo 3: cos'è una blockchain, il registro che nessuno può riscrivere, e cos'è l'impronta (hash) di un documento, con un esempio da provare al terminale.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html", "inLanguage": "it", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: la storia di una bottiglia d'olio", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/"}}</script>
+<!-- seo:end -->
 </head>
 <body>
 <div class="stickybar"><div class="concept" role="note"><b>BLOCKCHAIN: CASO D'USO</b>Concept a titolo didattico, rete di prova.</div>
@@ -26,6 +50,6 @@
 <p>Un solo carattere diverso e le due impronte non si assomigliano affatto. Per questo basta scrivere sulla catena l'impronta del referto del laboratorio: se qualcuno cambiasse il PDF, l'impronta non coinciderebbe più.</p>
 <div class="try"><h2>Prova tu</h2><p>Su un computer Linux o Mac apri il terminale e scrivi: printf 'acidita 0.2' | sha256sum (su Mac: shasum -a 256). Devi ottenere esattamente la prima impronta qui sopra. Poi cambia un carattere e guarda cosa succede.</p></div><div class="learn"><h2>Cosa hai imparato</h2><ul><li>Una blockchain è un registro condiviso dove ogni pagina è legata alla precedente.</li><li>L'hash è l'impronta di un file: stesso file, stessa impronta.</li><li>Cambiare una virgola cambia tutta l'impronta, quindi la manomissione si vede.</li></ul></div><h2>Per approfondire</h2><ul><li><a href="https://docs.polygon.technology/">Documentazione Polygon</a></li></ul><nav class="pn"><a href="c2.html">&larr; La storia di una bottiglia in 4 fasi</a><a href="index.html">Indice</a><a href="c4.html">Come lo verifichi tu &rarr;</a></nav>
 </main>
-<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche</a></footer>
+<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Scienze e Tecnologie Informatiche</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Sito di Giuseppe Bosi</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Codice su GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>
 </body>
 </html>

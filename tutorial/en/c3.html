@@ -3,13 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The register nobody can rewrite - Pietre di Vita</title>
 <link rel="stylesheet" href="style.css">
-<link rel="alternate" hreflang="it" href="../it/c3.html">
+<!-- seo:start -->
+<title>What Is a Blockchain and a Hash | Tutorial</title>
+<meta name="description" content="Chapter 3: what a blockchain is, the register nobody can rewrite, and what the fingerprint (hash) of a document is, with an example to try in the terminal.">
+<link rel="canonical" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html">
+<link rel="alternate" hreflang="it" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<link rel="alternate" hreflang="en" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html">
+<link rel="alternate" hreflang="x-default" href="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/c3.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pietre di Vita Olive Mill">
+<meta property="og:title" content="What Is a Blockchain and a Hash | Tutorial">
+<meta property="og:description" content="Chapter 3: what a blockchain is, the register nobody can rewrite, and what the fingerprint (hash) of a document is, with an example to try in the terminal.">
+<meta property="og:url" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html">
+<meta property="og:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Extra virgin olive oil bottle with a QR code: Pietre di Vita Olive Mill">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What Is a Blockchain and a Hash | Tutorial">
+<meta name="twitter:description" content="Chapter 3: what a blockchain is, the register nobody can rewrite, and what the fingerprint (hash) of a document is, with an example to try in the terminal.">
+<meta name="twitter:image" content="https://tracciabilita-olio.blockchain.giuseppebosi.com/og.jpg">
+<meta name="twitter:image:alt" content="Extra virgin olive oil bottle with a QR code: Pietre di Vita Olive Mill">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "3. The register nobody can rewrite", "description": "Chapter 3: what a blockchain is, the register nobody can rewrite, and what the fingerprint (hash) of a document is, with an example to try in the terminal.", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html", "inLanguage": "en", "author": {"@type": "Person", "name": "Giuseppe Bosi", "url": "https://www.giuseppebosi.com", "sameAs": ["https://www.giuseppebosi.com", "https://www.linkedin.com/in/giuseppebosi", "https://github.com/JoeBosi/pietre-di-vita-demo"]}, "datePublished": "2026-11-02", "dateModified": "2026-11-02", "mainEntityOfPage": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/c3.html", "isPartOf": {"@type": "Course", "name": "Pietre di Vita: the story of an olive oil bottle", "url": "https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/"}}</script>
+<!-- seo:end -->
 </head>
 <body>
 <div class="stickybar"><div class="concept" role="note"><b>BLOCKCHAIN: USE CASE</b>Educational concept, test network.</div>
-<header class="sitebar sb-olio"><div class="sb-in"><a class="sb-brand" href="/"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect x="12.6" y="1.5" width="6.8" height="4" rx="1.2" fill="#2a3913"/><path d="M13.6 5.5h4.8v4.2c0 1.6 4.1 3.2 4.1 7.8V28a2.6 2.6 0 0 1-2.6 2.6h-7.8A2.6 2.6 0 0 1 9.5 28V17.5c0-4.6 4.1-6.2 4.1-7.8z" fill="#c9a82e" stroke="#4c6422" stroke-width="1.2"/><rect x="10.8" y="17.5" width="10.4" height="9" rx="1.2" fill="#f4f7ec"/><path d="M12.6 24.4c2.2-4.4 5.6-5 7.6-3.2-1.7 3.7-5 4.6-7.6 3.2z" fill="#5f7a2a"/><circle cx="19.3" cy="24" r="1.7" fill="#2a3913"/></svg><span>Pietre di Vita Olive Mill</span></a><nav class="sb-nav" aria-label="Menu"><a href="/">Home</a><a href="/come-funziona">How it works</a><a href="/filiera">Supply chain</a><a class="sb-tut" href="index.html" aria-current="page"><span aria-hidden="true">&lt;/&gt;</span> Tutorial</a></nav><a class="lang sb-lang" href="../it/c3.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div></header></div>
+<header class="sitebar sb-olio"><div class="sb-in"><a class="sb-brand" href="/en/"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><rect x="12.6" y="1.5" width="6.8" height="4" rx="1.2" fill="#2a3913"/><path d="M13.6 5.5h4.8v4.2c0 1.6 4.1 3.2 4.1 7.8V28a2.6 2.6 0 0 1-2.6 2.6h-7.8A2.6 2.6 0 0 1 9.5 28V17.5c0-4.6 4.1-6.2 4.1-7.8z" fill="#c9a82e" stroke="#4c6422" stroke-width="1.2"/><rect x="10.8" y="17.5" width="10.4" height="9" rx="1.2" fill="#f4f7ec"/><path d="M12.6 24.4c2.2-4.4 5.6-5 7.6-3.2-1.7 3.7-5 4.6-7.6 3.2z" fill="#5f7a2a"/><circle cx="19.3" cy="24" r="1.7" fill="#2a3913"/></svg><span>Pietre di Vita Olive Mill</span></a><nav class="sb-nav" aria-label="Menu"><a href="/en/">Home</a><a href="/en/come-funziona">How it works</a><a href="/en/filiera">Supply chain</a><a class="sb-tut" href="index.html" aria-current="page"><span aria-hidden="true">&lt;/&gt;</span> Tutorial</a></nav><a class="lang sb-lang" href="../it/c3.html" hreflang="it" lang="it" title="Versione italiana"><svg viewBox="0 0 60 40" aria-hidden="true"><rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="40" width="20" height="40" fill="#ce2b37"/></svg><span>IT</span></a></div></header></div>
 <header class="h"><div class="brand">Olive oil traceability, step by step</div></header>
 <main>
 <h1>3. The register nobody can rewrite</h1><div class="goal"><strong>Goal:</strong> Understand in one page what a blockchain is and what the fingerprint (hash) of a document is.</div>
@@ -26,6 +50,6 @@
 <p>One character differs and the two fingerprints look nothing alike. That is why writing the fingerprint of the laboratory report on the chain is enough: if someone altered the PDF, the fingerprint would no longer match.</p>
 <div class="try"><h2>Try it yourself</h2><p>On a Linux or Mac computer open the terminal and type: printf 'acidita 0.2' | sha256sum (on Mac: shasum -a 256). You must get exactly the first fingerprint above. Then change one character and see what happens.</p></div><div class="learn"><h2>What you learned</h2><ul><li>A blockchain is a shared register where each page is tied to the previous one.</li><li>A hash is a file's fingerprint: same file, same fingerprint.</li><li>Changing one comma changes the whole fingerprint, so tampering shows.</li></ul></div><h2>To go deeper</h2><ul><li><a href="https://docs.polygon.technology/">Polygon documentation</a></li></ul><nav class="pn"><a href="c2.html">&larr; A bottle's story in 4 phases</a><a href="index.html">Contents</a><a href="c4.html">How you verify it &rarr;</a></nav>
 </main>
-<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Computer Science and Technology</a></footer>
+<footer><a href="https://www.giuseppebosi.com">Prof. Giuseppe Bosi, Computer Science and Technology</a><span class="xlinks"> &middot; <a href="https://www.giuseppebosi.com" target="_blank" rel="noopener">Giuseppe Bosi's website</a> &middot; <a href="https://github.com/JoeBosi/pietre-di-vita-demo" target="_blank" rel="noopener">Code on GitHub</a> &middot; <a href="https://www.linkedin.com/in/giuseppebosi" target="_blank" rel="noopener">LinkedIn</a></span></footer>
 </body>
 </html>

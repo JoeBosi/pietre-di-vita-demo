@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Tip } from '../components/Tip';
 
 export default function HowItWorks() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <div className="space-y-8">
       <header className="space-y-2">
@@ -47,7 +47,7 @@ export default function HowItWorks() {
           <li>{t('cf.tech3')}<Tip text={t('tip.hash')} /></li>
           <li>{t('cf.tech4')}</li>
         </ul>
-        <p className="mt-4"><a href="tutorial/" className="inline-flex items-center min-h-11 text-olive-800 font-medium underline">{t('cf.tutorial')}</a></p>
+        <p className="mt-4"><a href={`/tutorial/${lang}/`} className="inline-flex items-center min-h-11 text-olive-800 font-medium underline">{t('cf.tutorial')}</a></p>
       </details>
     </div>
   );

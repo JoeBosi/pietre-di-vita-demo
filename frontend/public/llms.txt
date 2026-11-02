@@ -1,0 +1,52 @@
+# Pietre di Vita Olive Mill
+
+> An educational concept on Polygon Amoy (a blockchain test network): every bottle of a fictional Tuscan extra virgin olive oil is traced in four signed phases (harvest, milling, lab analysis, bottling) and can be verified from the QR code on the label. Sample data and test coins only. Open source under the MIT license.
+
+## Pages
+- [Home](https://tracciabilita-olio.blockchain.giuseppebosi.com/en/): what the demo is and how a bottle is verified
+- [How it works](https://tracciabilita-olio.blockchain.giuseppebosi.com/en/come-funziona): the four phases, who signs each one, and how a lot recall works
+- [Supply chain area](https://tracciabilita-olio.blockchain.giuseppebosi.com/en/filiera): try the supply chain yourself on the test network
+- [Sample bottle](https://tracciabilita-olio.blockchain.giuseppebosi.com/en/b/25B001/1): public verification page of a sample bottle (lot 25B001)
+- [Recalled lot example](https://tracciabilita-olio.blockchain.giuseppebosi.com/en/b/25B003/1): what a recalled lot looks like (lot 25B003)
+
+## Tutorial and coding
+- [Tutorial (English)](https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/): nine chapters and a FAQ, from plain language to Solidity code
+- [Coding: build your own basic version](https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/en/build.html): contract, tests, QR code server and public page, step by step
+- [Tutorial (Italian)](https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/): the same course in Italian
+
+## Source code
+- [GitHub repository](https://github.com/JoeBosi/pietre-di-vita-demo): contract, backend, frontend and tutorial
+
+## Author
+- [Giuseppe Bosi](https://www.giuseppebosi.com): author, personal website
+- [LinkedIn](https://www.linkedin.com/in/giuseppebosi)
+
+## Notes
+- License: MIT. Network: Polygon Amoy (testnet). All data are made up for teaching purposes.
+
+---
+
+# Frantoio Pietre di Vita (versione italiana)
+
+> Concept didattico su Polygon Amoy (rete di prova): ogni bottiglia di un olio extravergine di oliva toscano di fantasia è tracciata in quattro fasi firmate (raccolta, molitura, analisi di laboratorio, imbottigliamento) e si verifica dal codice QR sull'etichetta. Dati di esempio e monete di prova. Codice aperto con licenza MIT.
+
+## Pagine
+- [Home](https://tracciabilita-olio.blockchain.giuseppebosi.com/): cos'è la dimostrazione e come si verifica una bottiglia
+- [Come funziona](https://tracciabilita-olio.blockchain.giuseppebosi.com/come-funziona): le quattro fasi, chi firma ciascuna e come funziona il richiamo di un lotto
+- [Area filiera](https://tracciabilita-olio.blockchain.giuseppebosi.com/filiera): prova la filiera sulla rete di prova
+- [Bottiglia di esempio](https://tracciabilita-olio.blockchain.giuseppebosi.com/b/25B001/1): pagina pubblica di verifica di una bottiglia di esempio (lotto 25B001)
+- [Esempio di lotto richiamato](https://tracciabilita-olio.blockchain.giuseppebosi.com/b/25B003/1): come appare un lotto richiamato (lotto 25B003)
+
+## Tutorial e coding
+- [Tutorial](https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/): nove capitoli e le domande frequenti, dal linguaggio semplice al codice Solidity
+- [Coding: costruisci la tua versione base](https://tracciabilita-olio.blockchain.giuseppebosi.com/tutorial/it/costruisci.html): contratto, test, server con QR code e pagina pubblica, passo passo
+
+## Codice sorgente
+- [Repository GitHub](https://github.com/JoeBosi/pietre-di-vita-demo): contratto, backend, frontend e tutorial
+
+## Autore
+- [Giuseppe Bosi](https://www.giuseppebosi.com): autore, sito personale
+- [LinkedIn](https://www.linkedin.com/in/giuseppebosi)
+
+## Note
+- Licenza: MIT. Rete: Polygon Amoy (testnet). Tutti i dati sono inventati a scopo didattico.
