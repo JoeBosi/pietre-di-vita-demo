@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../lib/api';
 import { Disclaimer } from '../components/Disclaimer';
+import { FlowDiagram } from '../components/FlowDiagram';
 import { Leaf, Check, Info, Alert } from '../components/Icons';
 
 const cta = 'inline-flex items-center justify-center gap-2 rounded-xl bg-olive-700 hover:bg-olive-800 text-white text-lg sm:text-xl font-semibold px-5 min-h-14 py-3 w-full sm:w-auto text-center';
@@ -13,12 +14,18 @@ export default function Home() {
     <div className="space-y-10">
       <section className="rounded-2xl bg-olive-50 border border-olive-100 p-5 sm:p-8 space-y-5">
         <p className="inline-block rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-sm font-medium px-3 py-1">{t('home.badge')}</p>
-        <h1 className="text-4xl sm:text-5xl font-bold text-olive-900 leading-tight">{t('home.title')}</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold text-olive-900 leading-tight">{t('home.title')}</h1>
         <p className="text-xl sm:text-2xl text-gray-800">{t('home.claim')}</p>
+        <p className="text-lg text-gray-800">{t('home.mission')}</p>
         <div className="space-y-2 pt-1">
           <Link to="/b/25B001/1" className={cta}>{t('home.cta')} <span aria-hidden="true">&rarr;</span></Link>
           <p className="text-gray-700">{t('home.ctad')}</p>
         </div>
+        <div className="rounded-xl border border-olive-100 bg-white p-4">
+          <p className="text-sm font-semibold uppercase tracking-wide text-olive-800 mb-3">{t('home.flowt')}</p>
+          <FlowDiagram />
+        </div>
+        <p className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-base font-medium text-amber-950">{t('home.honest')}</p>
       </section>
 
       <section aria-labelledby="how">
